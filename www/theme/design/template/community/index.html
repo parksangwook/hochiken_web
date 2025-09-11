@@ -1,0 +1,899 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/community/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? $_GET['co_id'] : '';
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_border";
+$row = sql_fetch($sql);
+$total_count2 = $row['cnt'];
+$border_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_border order by wr_1*1 desc";
+$border_table ='table_border';
+$board['bo_table'] ='g5_write_table_border';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $border_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $border_list_01[$i]['is_notice'] = false;
+    $border_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_event";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$event_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_event order by wr_1*1 desc";
+$event_table ='table_event';
+$board['bo_table'] ='g5_write_table_event';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $event_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $event_list_01[$i]['is_notice'] = false;
+    $event_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_event where ca_name='진행중 이벤트'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$event_list_02 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_event where ca_name='진행중 이벤트' order by wr_1*1 desc";
+$event_table ='table_event';
+$board['bo_table'] ='g5_write_table_event';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $event_list_02[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $event_list_02[$i]['is_notice'] = false;
+    $event_list_02[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_event where ca_name='종료된 이벤트'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$event_list_03 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_event where ca_name='종료된 이벤트' order by wr_1*1 desc";
+$event_table ='table_event';
+$board['bo_table'] ='g5_write_table_event';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $event_list_03[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $event_list_03[$i]['is_notice'] = false;
+    $event_list_03[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_media";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$media_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_media order by wr_1*1 desc";
+$table_media ='table_media';
+$board['bo_table'] ='g5_write_table_media';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $media_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $media_list[$i]['is_notice'] = false;
+    $media_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+?>
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Common CSS-->
+  <link rel="stylesheet" href="/css/style_community.css" />
+  <link rel="stylesheet" href="/css/style_mobile_community.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+  <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b2ebb20b168878d0591446fd359c946e&amp;libraries=services"></script> -->
+  <!--Font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" /> 
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="header"></div>
+<section class="main" id="top_move">
+  <div class="main_content rltv">
+    <div class="main_img_div">
+      <img class="main_img" src="/images/05_top_01.png">
+    </div>
+    <div class="main_text absol">
+      <p>Notice</p>
+      <p>.</p>
+    </div>
+  </div>
+</section>
+<section class="border_section" id="community_move">
+  <div class="border_content">
+    <div class="border_button_div">
+      <div class="border_button_s" data-value="step_01">
+        <p>소식</p>
+      </div>
+      <div class="border_button_s" data-value="step_02">
+        <p>이벤트</p>
+      </div>
+      <div class="border_button_s" data-value="step_03">
+        <p>고객의 소리</p>
+      </div>
+      <div class="border_button_s" data-value="step_04">
+        <p>제안</p>
+      </div>
+      <div class="border_button_s" data-value="step_05">
+        <p>호치킨 미디어</p>
+      </div>
+    </div>
+    <div class="border_div rltv">
+
+      <div class="border_div_01 absol" id="border_div_01">
+        <div class="border_rltv rltv">
+
+          <div class="border_search_div">
+            <div class="border_search rltv">
+              <input class="border_search_text" id="border_search_text" type="text" placeholder="제목를 입력해주세요.">
+              <img class="border_icon" id="border_icon" src="/images/05_con01_02.png">
+            </div>
+          </div>
+
+          <div class="border_list_01_div">
+
+            <div class="border_list_total">
+              <p><?php echo number_format($total_count2); ?></p>
+              <p>건의 게시물이 있습니다.</p>
+            </div>
+
+            <div class="border_list_01_title">
+              <div class="border_list_01_title_01">
+                <p>번호</p>
+              </div>
+              <div class="border_list_01_title_02">
+                <p>분류</p>
+              </div>
+              <div class="border_list_01_title_03">
+                <p>제목</p>
+              </div>
+              <div class="border_list_01_title_04">
+                <p>이름</p>
+              </div>
+              <div class="border_list_01_title_05">
+                <p>작성일</p>
+              </div>
+            </div>
+
+            
+                <?php
+                // wr7 === "O"가 먼저 나오도록 배열 정렬
+                usort($border_list_01, function($a, $b) {
+                    if($a['wr_7'] === 'O' && $b['wr_7'] !== 'O') return -1; // a 먼저
+                    if($a['wr_7'] !== 'O' && $b['wr_7'] === 'O') return 1;  // b 먼저
+                    return 0; // 나머지는 순서 유지
+                });
+
+                $number = 1; // 일반 게시물 번호 시작
+                for ($i=0; $i<count($border_list_01); $i++) {
+                    $file2 = get_file($table_border, $border_list_01[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                    } else {
+                        $file_src2 = '/images/con1_1_3.jpeg';
+                    }
+
+                    $youtube_url = $border_list_01[$i]['wr_2']; 
+                    $subject     = $border_list_01[$i]['wr_subject'];
+                    $write_date  = $border_list_01[$i]['wr_datetime'];
+                    $date_str    = date("Y-m-d", strtotime($write_date)); 
+
+                    $wr7    = $border_list_01[$i]['wr_7'];
+                    $wr_link = "/bbs/board.php?bo_table=table_border&wr_id=" . $border_list_01[$i]['wr_id'];
+                ?>
+                <div class="border_list_01_content" onclick="window.location.href='<?php echo $wr_link; ?>'" style="cursor:pointer;">
+                  <div class="border_list_01_content_01">
+                    <?php if($wr7 === "O") { ?>
+                      <div class="border_img_div">
+                        <img class="border_img" src="/images/05_con01_01.png" alt="공지">
+                      </div>
+                    <?php } else { ?>
+                      <div class="border_num_div">
+                        <p><?php echo $number++; ?></p>
+                      </div>
+                    <?php } ?>
+                  </div>
+                  <div class="border_list_01_content_02">
+                    <p>소식</p>
+                  </div>
+                  <div class="border_list_01_content_03">
+                    <p><?php echo $subject; ?></p>
+                  </div>
+                  <div class="border_list_01_content_04">
+                    <p><?php echo $youtube_url; ?></p>
+                  </div>
+                  <div class="border_list_01_content_05">
+                    <p><?php echo $date_str; ?></p>
+                  </div>
+                </div>
+                <?php } ?>
+
+
+
+
+
+<!--
+            <div class="border_list_01_content">
+              <div class="border_list_01_content_01">
+                <div class="border_img_div">
+                  <img class="border_img" src="/images/05_con01_01.png">
+                </div>
+              </div>
+              <div class="border_list_01_content_02">
+                <p>소식</p>
+              </div>
+              <div class="border_list_01_content_03">
+                <p>네이버 메인에 게시된 호치킨 치타윙봉!</p>
+              </div>
+              <div class="border_list_01_content_04">
+                <p>호치킨</p>
+              </div>
+              <div class="border_list_01_content_05">
+                <p>2025-07-14</p>
+              </div>
+            </div>
+-->
+
+          </div>
+
+          <div class="pagination_01"></div>
+
+        </div>
+      </div>
+
+      <div class="border_div_02 absol" id="border_div_02">
+        <div class="border_rltv rltv">
+          <div class="border_button_02">
+            <div class="border_button_02_s" data-value="step_01">
+              <p>전체</p>
+            </div>
+            <div class="border_button_02_s" data-value="step_02">
+              <p>진행중 이벤트</p>
+            </div>
+            <div class="border_button_02_s" data-value="step_03">
+              <p>종료된 이벤트</p>
+            </div>
+          </div>
+          <div class="border_02_div_div rltv">
+            <div class="border_02_div absol" id="border_02_div_01">
+              <div class="border_02_rltv rltv" id="list_wrap_02_01">
+
+            <?php for ($i=0; $i<count($event_list_01); $i++) {
+                $file2 = get_file($event_table, $event_list_01[$i]['wr_id']);
+                if (preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+                $wr_link = "/bbs/board.php?bo_table=table_event&wr_id=" . $event_list_01[$i]['wr_id'];
+
+                $number = $i + 1;
+
+                $date = date("Y-m-d", strtotime($event_list_01[$i]['wr_datetime']));
+            ?>
+                <div class="border_02_list_div rltv" onclick="window.location.href='<?php echo $wr_link; ?>'">
+                  <div class="border_02_list_img_div rltv">
+                    <div class="border_02_list_img absol">
+                      <img class="border_02_img"  src=<?php echo $file_src2; ?> style="width: 100%;">
+                    </div>
+                  </div>
+                  <div class="border_02_list_text_div">
+                    <p><?php echo $event_list_01[$i]['wr_subject']; ?></p>
+                    <p><?php echo $event_list_01[$i]['wr_2']; ?>  -  <?php echo $event_list_01[$i]['wr_3']; ?></p>
+                  </div>
+                </div>
+            <?php } ?>
+                  
+<!--
+                <div class="border_02_list_div rltv">
+                  <div class="border_02_list_img_div rltv">
+                    <div class="border_02_list_img absol">
+                      <img class="border_02_img" src="/images/05_con02_01.png">
+                    </div>
+                  </div>
+                  <div class="border_02_list_text_div">
+                    <p>[인스타그램]치뱅세트의 효과 맞추기</p>
+                    <p>2025.07.01 ~ 2025.07.07</p>
+                  </div>
+                </div>
+-->
+
+
+                <div class="pagination_02_01"></div>
+              </div>
+            </div>
+            <div class="border_02_div absol" id="border_02_div_02">
+              <div class="border_02_rltv rltv" id="list_wrap_02_02">
+
+                <?php for ($i=0; $i<count($event_list_02); $i++) {
+                $file2 = get_file($event_table, $event_list_02[$i]['wr_id']);
+                if (preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+                $wr_link = "/bbs/board.php?bo_table=table_event&wr_id=" . $event_list_02[$i]['wr_id'];
+                $number = $i + 1;
+
+                $date = date("Y-m-d", strtotime($event_list_02[$i]['wr_datetime']));
+            ?>
+                <div class="border_02_list_div rltv" onclick="window.location.href='<?php echo $wr_link; ?>'">
+                  <div class="border_02_list_img_div rltv">
+                    <div class="border_02_list_img absol">
+                      <img class="border_02_img"  src=<?php echo $file_src2; ?> style="width: 100%;">
+                    </div>
+                  </div>
+                  <div class="border_02_list_text_div">
+                    <p><?php echo $event_list_02[$i]['wr_subject']; ?></p>
+                    <p><?php echo $event_list_02[$i]['wr_2']; ?>  -  <?php echo $event_list_02[$i]['wr_3']; ?></p>
+                  </div>
+                </div>
+            <?php } ?>
+
+                <div class="pagination_02_02"></div>
+              </div>
+            </div>
+            <div class="border_02_div absol" id="border_02_div_03">
+              <div class="border_02_rltv rltv" id="list_wrap_02_03">
+
+                <?php for ($i=0; $i<count($event_list_03); $i++) {
+                $file2 = get_file($event_table, $event_list_03[$i]['wr_id']);
+                if (preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+                $wr_link = "/bbs/board.php?bo_table=table_event&wr_id=" . $event_list_03[$i]['wr_id'];
+                $number = $i + 1;
+
+                $date = date("Y-m-d", strtotime($event_list_03[$i]['wr_datetime']));
+            ?>
+                <div class="border_02_list_div rltv" onclick="window.location.href='<?php echo $wr_link; ?>'">
+                  <div class="border_02_list_img_div rltv">
+                    <div class="border_02_list_img absol">
+                      <img class="border_02_img"  src=<?php echo $file_src2; ?> style="width: 100%;">
+                    </div>
+                  </div>
+                  <div class="border_02_list_text_div">
+                    <p><?php echo $event_list_03[$i]['wr_subject']; ?></p>
+                    <p><?php echo $event_list_03[$i]['wr_2']; ?>  -  <?php echo $event_list_03[$i]['wr_3']; ?></p>
+                  </div>
+                </div>
+            <?php } ?>
+                
+                <div class="pagination_02_03"></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="border_div_03 absol" id="border_div_03">
+        <div class="border_rltv rltv">
+
+          <div class="form_title_01">
+            <p>고객의 소리</p>
+          </div>
+          <div class="formWrap_div rltv">
+            <div class="formWrap">
+              <form class="form" name="formmail" method="post" enctype="multipart/form-data">
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>작성자</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="name" name="name" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>제목</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="title" name="title" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>연락처</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div2">
+                      <input id="tel_01" name="tel_01" class="form_input_02 xss_check" type="text">
+                      <p class="form_input_02_text">-</p>
+                      <input id="tel_02" name="tel_02" class="form_input_02 xss_check" type="text">
+                      <p class="form_input_02_text">-</p>
+                      <input id="tel_03" name="tel_03" class="form_input_02 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>이메일</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="email" name="email" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>매장명</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="budget" name="budget" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form_div" style="display: none">
+                  <div class="form_left rltv">
+                    <p>첨부파일</p>
+                  </div>
+                  <div class="form_right rltv">
+                    <div class="file_whether_absol absol">
+                       <p class="file_whether">선택된 파일이 없습니다.</p>
+                       <p class="file_number">외 </p>
+                       <p class="file_clear_btn">x</p>
+                    </div>
+                    <div class="form_right_div rltv">
+                      <input class="upload_button" id="file-upload" type="file" name="attachment[]" multiple>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="form_index_div">
+                  <div class="form_left rltv">
+                    <p>내용</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <textarea class="form_input_03" id="form_index" name="form_index" rows="4" placeholder="문의 내용을 입력하세요"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form_agree_div">
+                  <div class="form_left rltv">
+                    <p>개인정보 취급방침</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <div class="agree_div rltv">
+                        <div class="agree_content absol">
+                          <div class="agree_margin">
+                            <p>다인에프씨㈜는 온라인 고객 서비스 상담을 위해 개인정보를 수집.이용 및 제3자 제공을 하고자 개인정보보호법 제 15조 및 제 22조에 따라 귀하의 동의를 받고자 합니다.</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>1. 개인정보 수집 및 이용 목적</p>
+                            <p>서비스를 이용하시는데 불편한 사항이나 제안, 기타문의사항에 대한 처리 및 상담을 위한 본인의사 확인, 사실확인, 처리, 회신, 사후조치 등</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>2. 수집하는 개인정보 항목</p>
+                            <p>성명, 연락처(전화번호, 핸드폰번호), 이메일, 주소</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>3. 보유 및 이용기간</p>
+                            <p>고객불만 및 상담과 관련된 분쟁 대비를 위해 아래 법률에 근거하여 보관되며 기간 경과 후 지체 없이 파기 합니다.</p>
+                            <p>1) 소비자의 불만 또는 분쟁처리에 관한 기록</p>
+                            <p>- 보존 근거 : 전자상거래 등에서의 소비자보호에 관한 법률</p>
+                            <p>- 보존 기간 : 3년</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>4. 개인정보 수집 이용 동의 거부권 및 불이익</p>
+                            <p>귀하께서 개인정보 수집 및 이용에 대해 거부할 수 있으며, 동의 거부 시에는 서비스 상담이 제한될 수 있습니다.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="agree_button_div">
+                        <input class="agree_checkbox" type="checkbox">
+                        <p>동의합니다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form_agree_div">
+                  <div class="form_left rltv">
+                    <p>개인정보 제3자 제공동의</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <div class="agree_div rltv">
+                        <div class="agree_content absol">
+                          <div class="agree_margin">
+                            <p>1. 수집하는 개인정보 항목</p>
+                            <p>본 사이트는 홈페이지 문의, 서비스 신청 등을 위해 아래와 같은 개인정보를 수집하고 있습니다.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="agree_button_div">
+                        <input class="agree_checkbox2" type="checkbox">
+                        <p>동의합니다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="form_button_div">
+            <div class="form_button">
+              <p>등록하기</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="border_div_04 absol" id="border_div_04">
+        <div class="border_rltv rltv">
+
+          <div class="form_title_01">
+            <p>제안</p>
+          </div>
+          <div class="formWrap_div rltv">
+            <div class="formWrap">
+              <form class="form" name="formmail" method="post" enctype="multipart/form-data">
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>작성자</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="name2" name="name2" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>제목</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="title2" name="title2" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>연락처</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div2">
+                      <input id="tel_01_02" name="tel_01_02" class="form_input_02 xss_check" type="text">
+                      <p class="form_input_02_text">-</p>
+                      <input id="tel_02_02" name="tel_02_02" class="form_input_02 xss_check" type="text">
+                      <p class="form_input_02_text">-</p>
+                      <input id="tel_03_02" name="tel_03_02" class="form_input_02 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>이메일</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="email2" name="email2" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_div">
+                  <div class="form_left rltv">
+                    <p>매장명</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <input id="budget2" name="budget2" class="form_input_01 xss_check" type="text">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form_div" style="display: none">
+                  <div class="form_left rltv">
+                    <p>첨부파일</p>
+                  </div>
+                  <div class="form_right rltv">
+                    <div class="file_whether_absol absol">
+                       <p class="file_whether">선택된 파일이 없습니다.</p>
+                       <p class="file_number">외 </p>
+                       <p class="file_clear_btn">x</p>
+                    </div>
+                    <div class="form_right_div rltv">
+                      <input class="upload_button2" id="file-upload2" type="file" name="attachment[]" multiple>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="form_index_div">
+                  <div class="form_left rltv">
+                    <p>내용</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <textarea class="form_input_03" id="form_index2" name="form_index2" rows="4" placeholder="문의 내용을 입력하세요"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form_agree_div">
+                  <div class="form_left rltv">
+                    <p>개인정보 취급방침</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <div class="agree_div rltv">
+                        <div class="agree_content absol">
+                          <div class="agree_margin">
+                            <p>다인에프씨㈜는 온라인 고객 서비스 상담을 위해 개인정보를 수집.이용 및 제3자 제공을 하고자 개인정보보호법 제 15조 및 제 22조에 따라 귀하의 동의를 받고자 합니다.</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>1. 개인정보 수집 및 이용 목적</p>
+                            <p>서비스를 이용하시는데 불편한 사항이나 제안, 기타문의사항에 대한 처리 및 상담을 위한 본인의사 확인, 사실확인, 처리, 회신, 사후조치 등</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>2. 수집하는 개인정보 항목</p>
+                            <p>성명, 연락처(전화번호, 핸드폰번호), 이메일, 주소</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>3. 보유 및 이용기간</p>
+                            <p>고객불만 및 상담과 관련된 분쟁 대비를 위해 아래 법률에 근거하여 보관되며 기간 경과 후 지체 없이 파기 합니다.</p>
+                            <p>1) 소비자의 불만 또는 분쟁처리에 관한 기록</p>
+                            <p>- 보존 근거 : 전자상거래 등에서의 소비자보호에 관한 법률</p>
+                            <p>- 보존 기간 : 3년</p>
+                          </div>
+                          <div class="agree_margin">
+                            <p>4. 개인정보 수집 이용 동의 거부권 및 불이익</p>
+                            <p>귀하께서 개인정보 수집 및 이용에 대해 거부할 수 있으며, 동의 거부 시에는 서비스 상담이 제한될 수 있습니다.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="agree_button_div">
+                        <input class="agree_checkbox" type="checkbox" id="agree_checkbox3">
+                        <p>동의합니다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form_agree_div">
+                  <div class="form_left rltv">
+                    <p>개인정보 제3자 제공동의</p>
+                  </div>
+                  <div class="form_right">
+                    <div class="form_right_div">
+                      <div class="agree_div rltv">
+                        <div class="agree_content absol">
+                          <div class="agree_margin">
+                            <p>1. 수집하는 개인정보 항목</p>
+                            <p>본 사이트는 홈페이지 문의, 서비스 신청 등을 위해 아래와 같은 개인정보를 수집하고 있습니다.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="agree_button_div">
+                        <input class="agree_checkbox2" type="checkbox" id="agree_checkbox4">
+                        <p>동의합니다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="form_button_div">
+            <div class="form_button2">
+              <p>등록하기</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="border_div_05 absol" id="border_div_05">
+        <div class="border_rltv rltv">
+
+          <div class="border_05_rltv rltv">
+
+              <?php for ($i=0; $i<count($media_list); $i++) {
+                $file2 = get_file($table_media, $media_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $media_list[$i]['wr_2']; 
+            ?>
+            <div class="border_05_list_div rltv">
+              <div class="border_05_list_vedio_div rltv">
+                <div class="border_05_list_vedio absol">
+                  <iframe class="border_veido"
+                    src="https://www.youtube.com/embed/<?php echo $youtube_url; ?>?autoplay=1&mute=1&loop=1&playlist=<?php echo $youtube_url; ?>&controls=0&modestbranding=1&rel=0"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </div>
+              <div class="border_05_list_text_div">
+                <p><?php echo $media_list[$i]['wr_subject']; ?></p>
+              </div>
+            </div>
+              
+            <?php } ?>
+
+<!--
+            <div class="border_05_list_div rltv">
+              <div class="border_05_list_vedio_div rltv">
+                <div class="border_05_list_vedio absol">
+                  <iframe class="border_veido"
+                    src="https://www.youtube.com/embed/SSRCxoJx78I?autoplay=1&mute=1&loop=1&playlist=SSRCxoJx78I&controls=0&modestbranding=1&rel=0"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </div>
+              <div class="border_05_list_text_div">
+                <p>호치킨 X 찍고</p>
+              </div>
+            </div>
+-->
+            
+          </div>
+          <div class="pagination_05"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- 
+<div class="main_01_div">
+  <img class="main_01" src="/images/main_01.png">
+</div>
+
+<div class="con03_scr rltv">
+  <img class="sd" src="/images/con01_12.png">
+  <img class="sd sd_next absol" src="/images/con01_12.png">
+</div>
+
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+
+    </div>
+  </div>
+</section>
+
+<div class="main_video_div absol">
+  <div class="main_video_rltv rltv">
+    <iframe class="main_video absol" src="https://www.youtube.com/embed/YrDai3SbErc?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=YrDai3SbErc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<div class="con01_swiper">
+  <div class="con01_swiper_wrapper swiper-wrapper">
+
+    <div class="con01_swiper_slide swiper-slide">
+      <div class='con01_sd_div'>
+
+      </div>
+    </div>
+
+  </div>
+</div> 
+
+-->
+<div id="footer"></div>
+</body>
+<script src="https://unpkg.com/split-type"></script>
+<!--gsap JS Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<!--Swiper JS Library-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!--jquery cdn-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- <script src="/js/map.js"></script> -->
+ <script src="/js/width_calculator.js"></script>
+<script src="/js/gsap_community.js"></script>
+<script src="/js/script_community.js"></script>
+</html>
+
+
+
+
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/community/script.js" ></script>
+  

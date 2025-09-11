@@ -1,0 +1,2143 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/contact/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? $_GET['co_id'] : '';
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_media";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$media_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_media order by wr_1*1 desc";
+$table_media ='table_media';
+$board['bo_table'] ='g5_write_table_media';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $media_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $media_list[$i]['is_notice'] = false;
+    $media_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_sales";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$sales_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_sales order by wr_1*1 desc";
+$table_sales ='table_sales';
+$board['bo_table'] ='g5_write_table_sales';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $sales_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $sales_list[$i]['is_notice'] = false;
+    $sales_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_chicken";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$chicken_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_chicken order by wr_1*1 desc";
+$table_chicken ='table_chicken';
+$board['bo_table'] ='g5_write_table_chicken';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $chicken_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $chicken_list[$i]['is_notice'] = false;
+    $chicken_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+?>
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Common CSS-->
+  <link rel="stylesheet" href="/css/style_contact.css" />
+  <link rel="stylesheet" href="/css/style_mobile_contact.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+  <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b2ebb20b168878d0591446fd359c946e&libraries=services"></script> -->
+  <!--Font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" /> 
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+<script src="https://hochicken.co.kr/js/jquery-1.12.4.min.js?ver=2304171"></script>
+<script src="https://hochicken.co.kr/js/jquery-migrate-1.4.1.min.js?ver=2304171"></script>
+<script src="https://hochicken.co.kr/js/jquery.menu.js?ver=2304171"></script>
+<script src="https://hochicken.co.kr/js/common.js?ver=2304171"></script>
+<script src="https://hochicken.co.kr/js/wrest.js?ver=2304171"></script>
+<script src="https://hochicken.co.kr/js/placeholders.min.js?ver=2304171"></script>
+</head>
+<body>
+<div id="header"></div>
+<section class="main" id="top_move">
+  <div class="main_content">
+    <div class="main_div">
+      <div class="main_div_01 rltv">
+        <video class="main_video absol" id="main_video" style="pointer-events: none;" width="100%" autoplay="" playsinline="" muted="" loop="" preload="auto">
+            <source src="/images/main_video_v2.mp4" type="video/mp4">
+        </video>
+      </div>
+	  <div class="typing">
+		<p class="tp01">호치킨은 홀치킨!</p>
+		<p class="tp02">독보적인 메뉴들로 차별화된 홀 경쟁력, 호치킨이 성공을 약속합니다.</p>
+	 </div>
+    </div>
+  </div>
+</section>
+<section class="con01">
+  <div class="con01_content">
+    <div class="con01_div">
+      <div class="con01_div_01">
+        <p>안정적 수익을 만드는</p>
+      </div>
+      <div class="con01_div_02">
+        <p>3WAY</p>
+        <p>SYSTEM</p>
+        <p>.</p>
+      </div>
+      <div class="con01_div_03_div rltv">
+        <div class="con01_absol absol">
+          <div class="con01_rltv rltv">
+            <div class="con01_03_div">
+              <img class="con01_03" src="/images/06_con01_03.png">
+            </div>
+            <div class="con01_04_div absol">
+              <img class="con01_04" src="/images/06_con01_04.png">
+            </div>
+            <div class="con01_05_div absol">
+              <img class="con01_05" src="/images/06_con01_05.png">
+            </div>
+          </div>
+        </div>
+        <div class="con01_div_03">
+          <div class="con01_div_03_left">
+            <div class="con01_div_03_left_div">
+              <div class="con01_06_div">
+                <img class="con01_06" src="/images/06_con01_06.png">
+              </div>
+            </div>
+          </div>
+          <div class="con01_div_03_right">
+            <div class="con01_div_03_right_div">
+              <div class="con01_07_div">
+                <img class="con01_07" src="/images/06_con01_07.png">
+              </div>
+              <div class="con01_08_div">
+                <img class="con01_08" src="/images/06_con01_08.png">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con01_div_04">
+        <p>효율성과 확장성을 모두 갖춘 치킨 창업,</p>
+        <p>홀·포장·배달 3way 시스템으로 안정적인 매출 상승 실현!</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+      <div class="con02_div_01">
+        <p>든든한 매출,</p>
+        <p>매일이 기대되는 운영</p>
+      </div>
+      <div class="con02_div_02">
+        <p>시간대 걱정 없이, 매일 든든한 운영이 가능합니다.</p>
+      </div>
+      <div class="con02_div_03 rltv">
+        <div class="con02_01_div">
+          <img class="con02_01" src="/images/06_con02_01.png">
+        </div>
+        <div class="con02_text_absol absol">
+          <div class="con02_text_rltv rltv">
+            <p>월 최고 매출액</p>
+            <p class="con02_ct" id="con02_ct">103,239,210</p>
+            <div class="con02_02_div absol">
+              <img class="con02_02" src="/images/06_con02_02.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con02_div_04">
+        <div class="con02_03_div">
+          <img class="con02_03" src="/images/06_con02_03.png">
+        </div>
+      </div>
+    </div>
+    <div class="con02_div_05">
+      <div class="con02_swiper">
+        <div class="con02_swiper_wrapper swiper-wrapper">
+
+            <?php for ($i=0; $i<count($sales_list); $i++) {
+                $file2 = get_file($table_media, $sales_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+ 
+                ?>
+            <div class="con02_swiper_slide swiper-slide">
+            <div class='con02_sd_div'>
+              <div class='con02_sd_top_div'>
+                <p><?php echo $sales_list[$i]['wr_subject'] ?></p>
+                <p><?php echo $sales_list[$i]['wr_2'] ?></p>
+              </div>
+              <div class="con02_sd_bottom_div">
+                <p><?php echo $sales_list[$i]['wr_3'] ?></p>
+              </div>
+            </div>
+          </div>
+            <?php } ?>
+<?php for ($i=0; $i<count($sales_list); $i++) {
+                $file2 = get_file($table_media, $sales_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+ 
+                ?>
+            <div class="con02_swiper_slide swiper-slide">
+            <div class='con02_sd_div'>
+              <div class='con02_sd_top_div'>
+                <p><?php echo $sales_list[$i]['wr_subject'] ?></p>
+                <p><?php echo $sales_list[$i]['wr_2'] ?></p>
+              </div>
+              <div class="con02_sd_bottom_div">
+                <p><?php echo $sales_list[$i]['wr_3'] ?></p>
+              </div>
+            </div>
+          </div>
+            <?php } ?>
+<?php for ($i=0; $i<count($sales_list); $i++) {
+                $file2 = get_file($table_media, $sales_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+ 
+                ?>
+            <div class="con02_swiper_slide swiper-slide">
+            <div class='con02_sd_div'>
+              <div class='con02_sd_top_div'>
+                <p><?php echo $sales_list[$i]['wr_subject'] ?></p>
+                <p><?php echo $sales_list[$i]['wr_2'] ?></p>
+              </div>
+              <div class="con02_sd_bottom_div">
+                <p><?php echo $sales_list[$i]['wr_3'] ?></p>
+              </div>
+            </div>
+          </div>
+            <?php } ?>
+<?php for ($i=0; $i<count($sales_list); $i++) {
+                $file2 = get_file($table_media, $sales_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+ 
+                ?>
+            <div class="con02_swiper_slide swiper-slide">
+            <div class='con02_sd_div'>
+              <div class='con02_sd_top_div'>
+                <p><?php echo $sales_list[$i]['wr_subject'] ?></p>
+                <p><?php echo $sales_list[$i]['wr_2'] ?></p>
+              </div>
+              <div class="con02_sd_bottom_div">
+                <p><?php echo $sales_list[$i]['wr_3'] ?></p>
+              </div>
+            </div>
+          </div>
+            <?php } ?>
+            
+<!--
+          <div class="con02_swiper_slide swiper-slide">
+            <div class='con02_sd_div'>
+              <div class='con02_sd_top_div'>
+                <p>송도글로벌캠퍼스점</p>
+                <p>2024년 1월</p>
+              </div>
+              <div class="con02_sd_bottom_div">
+                <p>86,004,230</p>
+              </div>
+            </div>
+          </div>
+-->
+
+        </div>
+      </div> 
+    </div>
+  </div>
+</section>
+<section class="con03">
+  <div class="con03_content">
+    <div class="con03_div">
+      <div class="con03_div_01">
+        <p>성공을 만든 사람들의 이야기</p>
+      </div>
+      <div class="con03_div_02">
+        <p>INTERVIEW.</p>
+      </div>
+      <div class="con03_div_03 rltv">
+        <div class="con03-button-prev absol">
+          <div class="con03_button_rltv rltv">
+            <img class="con03_button_img" src="/images/button_img.png">
+            <img class="con03_button_absol_img absol" src="/images/button_absol_img.png">
+          </div>
+        </div>
+        <div class="con03-button-next absol">
+          <div class="con03_button_rltv rltv">
+            <img class="con03_button_img" src="/images/button_img.png">
+            <img class="con03_button_absol_img absol" src="/images/button_absol_img.png">
+          </div>
+        </div>
+        <div class="con03_img_rtlv rltv">
+          <iframe class="con03_video absol"
+            src="https://www.youtube.com/embed/<?php echo $media_list[0]['wr_2']; ?>?autoplay=1&loop=1&playlist=<?php echo $media_list[0]['wr_2']; ?>&controls=0&modestbranding=1&rel=0"
+            title="YouTube video player"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="con03_text_rtlv rltv">
+          <p><?php echo $media_list[0]['wr_subject']; ?></p>
+        </div>
+      </div>
+      <div class="con03_div_04">
+        <div class="con03_swiper">
+          <div class="con03_swiper_wrapper swiper-wrapper">
+
+            <?php for ($i=0; $i<count($media_list); $i++) {
+                $file2 = get_file($table_media, $media_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $media_list[$i]['wr_2']; 
+                ?>
+              <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv' data-youtube="<?php echo $youtube_url; ?>" data-title="<?php echo $media_list[$i]['wr_subject']; ?>">
+                    <img class="con03_sd_img" src=<?php echo $file_src2; ?>>
+                    <div class="con03_sd_text_absol absol">
+                      <p><?php echo $media_list[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+                </div>
+            <?php } ?>
+<!--
+            <div class="con03_swiper_slide swiper-slide">
+              <div class='con03_sd_div rltv'>
+                <img class="con03_sd_img" src="/images/06_con03_02.png">
+                <div class="con03_sd_text_absol absol">
+                  <p>은퇴 후 1억 매출</p>
+                </div>
+              </div>
+            </div>
+-->
+
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con05">
+  <div class="con05_content">
+    <div class="con05_div">
+      <div class="con05_div_01">
+        <p>수치로 입증된</p>
+        <p>수익률</p>
+      </div>
+      <div class="con05_div_02">
+        <p>안정적인 구조 위에서 진짜  ‘나의 매장’을 만들어가세요.</p>
+      </div>
+      <div class="con05_div_03">
+        <div class="con05_left">
+          <div class="con05_left_div rltv">
+            <div class="con05_01_div">
+              <img class="con05_01" src="/images/06_con05_01.png">
+            </div>
+            <div class="con05_02_div absol">
+              <img class="con05_02" src="/images/06_con05_02.png">
+            </div>
+          </div>
+        </div>
+        <div class="con05_right">
+          <div class="con05_right_div rltv">
+            <div class="con05_04_div">
+              <img class="con05_04" src="/images/06_con05_04.png">
+            </div>
+            <div class="con05_05_div absol">
+              <img class="con05_05" src="/images/06_con05_05.png">
+            </div>
+            <p>*24년 12월 실제 가맹점 수익 기준으로 매장 운영 방식에 따라 수치는 상이 할 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con06">
+  <div class="con06_content">
+    <div class="con06_div">
+      <div class="con06_div_01">
+        <p>실전에서 증명된</p>
+      </div>
+      <div class="con06_div_02">
+        <p>창업 경쟁력</p>
+      </div>
+      <div class="con06_div_03 rltv pc-mobile">
+        <div class="con06_01_div absol">
+          <img class="con06_01" src="/images/06_con06_01.png">
+        </div>
+        <div class="con06_02_div absol">
+          <img class="con06_02" src="/images/06_con06_02.png">
+        </div>
+        <div class="con06_box">
+          <div class="con06_left_box">
+            <div class="con06_box_img_div rltv">
+              <img class="con06_img" src="/images/06_con06_03.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">다양성</p>
+              <div class="con06_box_text absol">
+                <p>후라이드, 오븐구이 등</p>
+                <p>남녀노소 모두의 니즈를 충족하는</p>
+                <p>호치킨만의 독보적인 메뉴 다양성</p>
+              </div>
+            </div>
+          </div>
+          <div class="con06_right_box">
+            <div class="con06_box_img_div">
+              <img class="con06_img" src="/images/06_con06_04.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">착한기업</p>
+              <div class="con06_box_text absol">
+                <p>꾸준한 후원 및</p>
+                <p>지역사회 발전에 기여하여 </p>
+                <p>기업의 사회적 책임을 다하는 브랜드</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con06_div_04 rltv pc-mobile">
+        <div class="con06_scr_absol absol">
+          <div class="con06_scr rltv">
+            <img class="sd" src="/images/06_con06_10.png">
+            <img class="sd sd_next absol" src="/images/06_con06_10.png">
+          </div>
+        </div>
+        <div class="con06_box">
+          <div class="con06_left_box rltv">
+            <div class="con06_06_div absol">
+              <img class="con06_06" src="/images/06_con06_06.png">
+            </div>
+            <div class="con06_box_img_div rltv">
+              <img class="con06_img" src="/images/06_con06_05.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">가성비</p>
+              <div class="con06_box_text absol">
+                <p>가성비를 찾는 소비자가 늘고 있습니다.</p>
+                <p>호치킨은 9년 연속 소비자만족지수 1위로 </p>
+                <p>그 가치를 증명했습니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="con06_right_box">
+            <div class="con06_box_img_div">
+              <img class="con06_img" src="/images/06_con06_07.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">시스템</p>
+              <div class="con06_box_text absol">
+                <p>프랜차이즈 전문가가 만든</p>
+                <p>체계적인 창업 시스템,</p>
+                <p>전문 인력이 함께하는 안정적인 운영 지원.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con06_div_05 rltv pc-mobile">
+        <div class="con06_scr_absol2 absol">
+          <div class="con06_scr rltv">
+            <img class="sd" src="/images/06_con06_11.png">
+            <img class="sd sd_next absol" src="/images/06_con06_11.png">
+          </div>
+        </div>
+        <div class="con06_box">
+          <div class="con06_left_box">
+            <div class="con06_box_img_div rltv">
+              <img class="con06_img" src="/images/06_con06_08.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">상생경영</p>
+              <div class="con06_box_text absol">
+                <p>본사와 가맹점이 함께 성장할 수 있도록,</p>
+                <p>진정한 상생을 실천합니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="con06_right_box">
+            <div class="con06_box_img_div">
+              <img class="con06_img" src="/images/06_con06_09.png">
+            </div>
+            <div class="con06_box_tex_div rltv">
+              <p class="con06_box_title absol">전문성</p>
+              <div class="con06_box_text absol">
+                <p>시장과 고객을 먼저 읽는 R&D,</p>
+                <p>끊임없는 개발로 경쟁력을 높입니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con06_div_m mobile-pc">
+        <div class="con06_div_m_01">
+          <div class="con06_01_div">
+            <img class="con06_01" src="/images/06_con06_01.png">
+          </div>
+          <div class="con06_02_div">
+            <img class="con06_02" src="/images/06_con06_02.png">
+          </div>
+        </div>
+        <div class="con06_div_m_02">
+          <div class="con06_swiper_m">
+            <div class="con06_swiper_wrapper_m swiper-wrapper">
+
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_box_img_div rltv">
+                    <img class="con06_img" src="/images/06_con06_03.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">다양성</p>
+                    <div class="con06_box_text absol">
+                      <p>후라이드, 오븐구이 등</p>
+                      <p>남녀노소 모두의 니즈를 충족하는</p>
+                      <p>호치킨만의 독보적인 메뉴 다양성</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_box_img_div">
+                    <img class="con06_img" src="/images/06_con06_04.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">착한기업</p>
+                    <div class="con06_box_text absol">
+                      <p>꾸준한 후원 및</p>
+                      <p>지역사회 발전에 기여하여 </p>
+                      <p>기업의 사회적 책임을 다하는 브랜드</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_06_div absol">
+                    <img class="con06_06" src="/images/06_con06_06.png">
+                  </div>
+                  <div class="con06_box_img_div rltv">
+                    <img class="con06_img" src="/images/06_con06_05.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">가성비</p>
+                    <div class="con06_box_text absol">
+                      <p>가성비를 찾는 소비자가 늘고 있습니다.</p>
+                      <p>호치킨은 9년 연속 소비자만족지수 1위로 </p>
+                      <p>그 가치를 증명했습니다.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_box_img_div">
+                    <img class="con06_img" src="/images/06_con06_07.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">시스템</p>
+                    <div class="con06_box_text absol">
+                      <p>프랜차이즈 전문가가 만든</p>
+                      <p>체계적인 창업 시스템,</p>
+                      <p>전문 인력이 함께하는 안정적인 운영 지원.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_box_img_div rltv">
+                    <img class="con06_img" src="/images/06_con06_08.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">상생경영</p>
+                    <div class="con06_box_text absol">
+                      <p>본사와 가맹점이 함께 성장할 수 있도록,</p>
+                      <p>진정한 상생을 실천합니다.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="con06_swiper_slide_m swiper-slide">
+                <div class='con06_sd_div_m'>
+                  <div class="con06_box_img_div">
+                    <img class="con06_img" src="/images/06_con06_09.png">
+                  </div>
+                  <div class="con06_box_tex_div rltv">
+                    <p class="con06_box_title absol">전문성</p>
+                    <div class="con06_box_text absol">
+                      <p>시장과 고객을 먼저 읽는 R&D,</p>
+                      <p>끊임없는 개발로 경쟁력을 높입니다.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con07">
+  <div class="con07_content">
+    <div class="con07_div">
+      <div class="con07_div_01">
+        <p>호치킨이</p>
+        <p>특별한 이유</p>
+      </div>
+      <div class="con07_div_02">
+        <p>지금 이 순간, 수많은 선택지 속에서 호치킨이 사랑받는 이유를 소개합니다.</p>
+      </div>
+      <div class="con07_div_03">
+        <div class="con07_div_03_01 rltv pc-mobile">
+          <div class="con07_bar_01"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_01">
+            <p class="con07_text_01">1,469</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">A치킨집</p>
+          </div>
+        </div>
+        <div class="con07_div_03_02 rltv pc-mobile">
+          <div class="con07_bar_02"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_02">
+            <p class="con07_text_01">1,676</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">B치킨집</p>
+          </div>
+        </div>
+        <div class="con07_div_03_03 rltv pc-mobile">
+          <div class="con07_bar_03"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_03">
+            <p class="con07_text_01">1,584</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">C치킨집</p>
+          </div>
+        </div>
+        <div class="con07_div_03_04 rltv">
+          <div class="con07_nv_absol absol">
+            <div class="con07_nv_rltv rltv">
+              <div class="con07_01_img">
+                <img class="con07_01" src="/images/06_con07_01.png">
+              </div>
+              <div class="con07_02_img absol">
+                <img class="con07_02" src="/images/06_con07_02.png">
+              </div>
+              <p class="absol">1,570</p>
+            </div>
+          </div>
+          <div class="con07_div_m mobile-pc">
+            <div class="con07_left_m">
+              <div class="con07_left_m_01">
+                <p>A치킨집</p>
+              </div>
+              <div class="con07_left_m_02">
+                <p>B치킨집</p>
+              </div>
+              <div class="con07_left_m_03">
+                <p>C치킨집</p>
+              </div>
+              <div class="con07_left_m_04">
+                <p>D치킨집</p>
+              </div>
+              <div class="con07_left_m_05">
+                <p>E치킨집</p>
+              </div>
+            </div>
+            <div class="con07_right_m">
+              <div class="con07_right_m_01">
+                <div class="con07_right_bar_m rltv">
+                  <p class="con07_text_m_01 absol">1,469</p>
+                </div>
+              </div>
+              <div class="con07_right_m_02">
+                <div class="con07_right_bar_m rltv">
+                  <p class="con07_text_m_02 absol">1,676</p>
+                </div>
+              </div>
+              <div class="con07_right_m_03">
+                <div class="con07_right_bar_m rltv">
+                  <p class="con07_text_m_03 absol">1,584</p>
+                </div>
+              </div>
+              <div class="con07_right_m_04">
+                <div class="con07_right_bar_m rltv">
+                  <p class="con07_text_m_04 absol">1,272</p>
+                </div>
+              </div>
+              <div class="con07_right_m_05">
+                <div class="con07_right_bar_m rltv">
+                  <p class="con07_text_m_05 absol">1,518</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="con07_bar_04"></div>
+          <div class="con07_div_03_04_absol absol">
+            <div class="con07_div_03_04_rltv rltv">
+              <div class="con07_div_03_04_absol_01">
+                <p>24년 공정거래 위원회 정보공개서 기준</p>
+              </div>
+              <div class="con07_div_03_04_absol_02">
+                <p>치킨브랜드 타사 대비</p>
+              </div>
+              <div class="con07_div_03_04_absol_03">
+                <p>높은 평당매출</p>
+              </div>
+              <div class="con07_div_03_04_absol_04">
+                <div class="con07_09_img">
+                  <img class="con07_09" src="/images/06_con07_09.png">
+                </div>
+              </div>
+              <div class="con07_10_div absol">
+                <img class="con07_10" src="/images/06_con07_10.png">
+              </div>
+              <div class="con07_11_div absol">
+                <img class="con07_11" src="/images/06_con07_11.png">
+              </div>
+              <div class="con07_12_div absol">
+                <img class="con07_12" src="/images/06_con07_12.png">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="con07_div_03_05 rltv pc-mobile">
+          <div class="con07_bar_05"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_04">
+            <p class="con07_text_01">1,584</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">D치킨집</p>
+          </div>
+        </div>
+        <div class="con07_div_03_06 rltv pc-mobile">
+          <div class="con07_bar_06"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_05">
+            <p class="con07_text_01">1,518</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">E치킨집</p>
+          </div>
+        </div>
+        <div class="con07_div_03_07 rltv pc-mobile">
+          <div class="con07_bar_07"></div>
+          <div class="con07_text_01_div absol" id="con07_text_01_div_06">
+            <p class="con07_text_01">1,594</p>
+          </div>
+          <div class="con07_text_02_div absol">
+            <p class="con07_text_02">F치킨집</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con08">
+  <div class="con08_content rltv pc-mobile">
+    <div class="con08_move_img absol">
+      <img class="con08_move" src="/images/06_con08_01.png">
+    </div>
+    <div class="con08_div rltv">
+      <div class="con08_left">
+        <div class="con08_left_div rltv">
+          <div class="con08_text_01 absol">
+            <p>비용 절감부터 조리까지,</p>
+            <p>효율에 최적화된</p>
+            <div class="con08_text_row">
+              <p>실전형</p>
+              <p>창업 시스템</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con08_right">
+        <div class="con08_right_div absol">
+          <div class="con08_right_div_01 rltv">
+            <div class="con08_text_right_01 absol">
+              <p>Low</p>
+              <p>Food Cost</p>
+            </div>
+            <div class="con08_text_right_02 absol">
+              <p>01</p>
+              <p>낮은 원가율</p>
+              <p>자체공장 기반의 원가 경쟁력</p>
+              <p>자체 생산·물류 시스템으로 높은 마진 구조를 실현합니다.</p>
+            </div>
+            <div class="con08_text_right_03 absol">
+              <div class="con08_img_rltv rltv">
+                <img class="con08_img" src="/images/06_con08_02.png">
+              </div>
+            </div>
+          </div>
+          <div class="con08_right_div_02 rltv">
+            <div class="con08_text_right_01 absol">
+              <p>No Prep,</p>
+              <p>No Marination</p>
+            </div>
+            <div class="con08_text_right_02 absol">
+              <p>02</p>
+              <p>손질/숙성 無</p>
+              <p>손질·숙성 없는 간편 준비</p>
+              <p>염지육계를 그대로 공급해 노동시간과 인건비를 확 줄였습니다.</p>
+            </div>
+            <div class="con08_text_right_03 absol">
+              <div class="con08_img_rltv rltv">
+                <img class="con08_img" src="/images/06_con08_03.png">
+              </div>
+            </div>
+          </div>
+          <div class="con08_right_div_03 rltv">
+            <div class="con08_text_right_01 absol">
+              <p>Easy</p>
+              <p>Cooking System</p>
+            </div>
+            <div class="con08_text_right_02 absol">
+              <p>03</p>
+              <p>누구나 가능한 쉬운 조리</p>
+              <p>손질·숙성 없는 간편 준비</p>
+              <p>창업 초보도 쉽게 가능한 간편하고 빠른 조리 시스템.</p>
+            </div>
+            <div class="con08_text_right_03 absol">
+              <div class="con08_img_rltv rltv">
+                <img class="con08_img" src="/images/06_con08_04.png">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="con08_div_m mobile-pc">
+    <div class="con08_div_m_01">
+      <p>비용 절감부터 조리까지,</p>
+      <p>효율에 최적화된</p>
+      <div class="con08_text_row">
+        <p>실전형</p>
+        <p>창업 시스템</p>
+      </div>
+    </div>
+    <div class="con08_div_m_02">
+      <p>Low</p>
+      <p>Food Cost</p>
+    </div>
+    <div class="con08_div_m_03">
+      <div class="con08_swiper_m">
+        <div class="con08_swiper_wrapper_m swiper-wrapper">
+
+          <div class="con08_swiper_slide_m swiper-slide">
+            <div class='con08_sd_div_m'>
+              <div class="con08_sd_div_m_01">
+                <img class="con08_img" src="/images/06_con08_02.png">
+              </div>
+              <div class="con08_sd_div_m_02">
+                <p>01</p>
+                <p>낮은 원가율</p>
+                <p>자체공장 기반의 원가 경쟁력</p>
+                <p>자체 생산·물류 시스템으로 높은 마진 구조를 실현합니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="con08_swiper_slide_m swiper-slide">
+            <div class='con08_sd_div_m'>
+              <div class="con08_sd_div_m_01">
+                <img class="con08_img" src="/images/06_con08_03.png">
+              </div>
+              <div class="con08_sd_div_m_02">
+                <p>02</p>
+                <p>손질/숙성 無</p>
+                <p>손질·숙성 없는 간편 준비</p>
+                <p>염지육계를 그대로 공급해 노동시간과 인건비를 확 줄였습니다.</p>
+              </div>
+            </div>
+          </div>
+          <div class="con08_swiper_slide_m swiper-slide">
+            <div class='con08_sd_div_m'>
+              <div class="con08_sd_div_m_01">
+                <img class="con08_img" src="/images/06_con08_04.png">
+              </div>
+              <div class="con08_sd_div_m_02">
+                <p>03</p>
+                <p>누구나 가능한 쉬운 조리</p>
+                <p>손질·숙성 없는 간편 준비</p>
+                <p>창업 초보도 쉽게 가능한 간편하고 빠른 조리 시스템.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div> 
+    </div>
+  </div>
+</section>
+<section class="con09">
+  <div class="con09_content">
+    <div class="con09_div">
+      <div class="con09_div_01">
+        <div class="con09_01_div">
+          <img class="con09_01" src="/images/06_con09_01.png">
+        </div>  
+      </div>
+      <div class="con09_div_02">
+        <p>성과로 증명하는 브랜드 가치</p>
+      </div>
+      <div class="con09_div_03">
+        <p>인정받은 시스템과 철저한 준비, 그래서 호치킨입니다.</p>
+      </div>
+      <div class="con09_div_04 rltv pc-mobile">
+        <div class="con09_step_absol_01 absol">
+          <div class="con09_step_rltv rltv">
+            <div class="con09_text_01 absol">
+              <p>01</p>
+              <p>꾸준한 기업</p>
+              <p>호치킨</p>
+            </div>
+            <div class="con09_text_02 absol">
+              <p>프랜차이즈 브랜드의 평균 지속 연수 4.8년</p>
+              <p>창립 18년의 호치킨은 꾸준함이라는</p>
+              <p>강력한 무기가 있습니다.</p>
+            </div>
+            <div class="con09_bg_01 absol"></div>
+            <div class="con09_03_div absol">
+              <img class="con09_03" src="/images/06_con09_03.png">
+            </div>
+            <div class="con09_04_div absol">
+              <img class="con09_04" src="/images/06_con09_04.png">
+            </div>
+            <div class="con09_step_absol_01_01 absol">
+              <div class="con09_05_div">
+                <img class="con09_05" src="/images/06_con09_05.png">
+              </div>
+              <div class="con09_06_div">
+                <img class="con09_06" src="/images/06_con09_06.png">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="con09_step_absol_02 absol">
+          <div class="con09_step_rltv">
+            <div class="con09_text_01 absol">
+              <p>02</p>
+              <p>오픈 마케팅 지원</p>
+              <p>체계 도입</p>
+            </div>
+            <div class="con09_text_02 absol">
+              <p>오픈 후 3개월 내 매출 안정화를 목표로 오픈 지원 마케팅을 추진합니다.</p>
+              <p>초기 공격적인 마케팅을 통한 고객 확보가</p>
+              <p>매장의 장기적 매출로 연결됩니다.</p>
+            </div>
+            <div class="con09_step_absol_02_absol absol">
+              <div class="con09_step_absol_02_rltv rltv">
+                <div class="con09_step_absol_02_top rltv">
+                  <div class="con09_07_div">
+                    <img class="con09_07" src="/images/06_con09_07.png">
+                  </div>
+                  <div class="con09_08_div absol">
+                    <img class="con09_08" src="/images/06_con09_08.png">
+                  </div>
+                  <div class="con09_09_div absol">
+                    <img class="con09_09" src="/images/06_con09_09.png">
+                  </div>
+                  <div class="con09_10_div absol">
+                    <img class="con09_10" src="/images/06_con09_10.png">
+                  </div>
+                  <div class="con09_11_div absol">
+                    <img class="con09_11" src="/images/06_con09_11.png">
+                  </div>
+                </div>
+                <div class="con09_step_absol_02_bottom rltv">
+                  <div class="con09_07_1_div">
+                    <img class="con09_07_1" src="/images/06_con09_07_1.png">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="con09_step_absol_03 absol">
+          <div class="con09_step_rltv rltv">
+            <div class="con09_text_01 absol">
+              <p>03</p>
+              <p>배달채널</p>
+              <p>B2B 계약체결</p>
+            </div>
+            <div class="con09_text_02 absol">
+              <p>대한민국 주요 배달앱과 제휴를 맺고,</p>
+              <p>단골 확보와 신규 고객 유치를 위해</p>
+              <p>정기적인 이벤트 및 마케팅을 진행합니다.</p>
+            </div>
+            <div class="con09_12_div absol">
+              <img class="con09_12" src="/images/06_con09_12.png">
+            </div>
+            <div class="con09_step_absol_03_01 absol">
+              <div class="con09_step_absol_03_01_div">
+                <img class="con09_img" src="/images/06_con09_13.png">
+                <img class="con09_img" src="/images/06_con09_14.png">
+              </div>
+              <div class="con09_step_absol_03_02_div">
+                <img class="con09_img" src="/images/06_con09_15.png">
+                <img class="con09_img" src="/images/06_con09_16.png">
+              </div>
+              <div class="con09_step_absol_03_03_div">
+                <img class="con09_img" src="/images/06_con09_17.png">
+                <img class="con09_img" src="/images/06_con09_18.png">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="con09_step_absol_04 absol">
+          <div class="con09_step_rltv rltv">
+            <div class="con09_text_01 absol">
+              <p>04</p>
+              <p>한국소비자만족지수 1위</p>
+              <p>프랜차이즈(치킨) 부문 9년 연속 1위</p>
+            </div>
+            <div class="con09_text_02 absol">
+              <p>9년 연속 소비자만족지수 1위 수상!</p>
+              <p>꾸준한 신뢰와 사랑으로 증명된 브랜드입니다.</p>
+            </div>
+            <div class="con09_19_div absol">
+              <img class="con09_19" src="/images/06_con09_19.png">
+            </div>
+            <div class="con09_20_div absol">
+              <img class="con09_20" src="/images/06_con09_20.png">
+            </div>
+            <div class="con09_swiper_absol_01 absol">
+              <div class="con09_swiper_y">
+                <div class="con09_swiper_wrapper_y swiper-wrapper">
+
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_21.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_22.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_23.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_24.png">
+                    </div>
+                  </div>
+                    \
+
+                </div>
+              </div> 
+            </div>
+            <div class="con09_swiper_absol_02 absol">
+              <div class="con09_swiper_y2">
+                <div class="con09_swiper_wrapper_y swiper-wrapper">
+
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_25.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_26.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_27.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_28.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_25.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_26.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_27.png">
+                    </div>
+                  </div>
+                  <div class="con09_swiper_slide_y swiper-slide">
+                    <div class='con09_sd_div_y'>
+                      <img class="con09_sd_img_y" src="/images/06_con09_28.png">
+                    </div>
+                  </div>
+
+                </div>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con09_swiper_div_m mobile-pc rltv">
+      <div class="con09-button-prev_m absol">
+        <div class="con09_button_rltv rltv">
+          <img class="con09_button_img" src="/images/button_img.png">
+          <img class="con09_button_absol_img absol" src="/images/button_absol_img.png">
+        </div>
+      </div>
+      <div class="con09-button-next_m absol">
+        <div class="con09_button_rltv rltv">
+          <img class="con09_button_img" src="/images/button_img.png">
+          <img class="con09_button_absol_img absol" src="/images/button_absol_img.png">
+        </div>
+      </div>
+        <div class="con09_swiper_m">
+          <div class="con09_swiper_wrapper_m swiper-wrapper">
+
+            <div class="con09_swiper_slide_m swiper-slide">
+              <div class='con09_sd_div_m'>
+                <div class="con09_text_01">
+                  <p>01</p>
+                  <p>꾸준한 기업</p>
+                  <p>호치킨</p>
+                </div>
+                <div class="con09_text_02">
+                  <p>프랜차이즈 브랜드의 평균 지속 연수 4.8년</p>
+                  <p>창립 18년의 호치킨은 꾸준함이라는</p>
+                  <p>강력한 무기가 있습니다.</p>
+                </div>
+                <div class="con09_img_div_m rltv">
+                  <div class="con09_bg_01 absol"></div>
+                  <div class="con09_03_div absol">
+                    <img class="con09_03" src="/images/06_con09_03.png">
+                  </div>
+                  <div class="con09_04_div absol">
+                    <img class="con09_04" src="/images/06_con09_04.png">
+                  </div>
+                  <div class="con09_step_absol_01_01 absol">
+                    <div class="con09_05_div">
+                      <img class="con09_05" src="/images/06_con09_05.png">
+                    </div>
+                    <div class="con09_06_div">
+                      <img class="con09_06" src="/images/06_con09_06.png">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="con09_swiper_slide_m swiper-slide">
+              <div class='con09_sd_div_m'>
+                <div class="con09_text_01">
+                  <p>02</p>
+                  <p>오픈 마케팅 지원</p>
+                  <p>체계 도입</p>
+                </div>
+                <div class="con09_text_02">
+                  <p>오픈 후 3개월 내 매출 안정화를 목표로</p>
+                  <p>오픈 지원 마케팅을 추진합니다.</p>
+                  <p>초기 공격적인 마케팅을 통한 고객 확보가</p>
+                  <p>매장의 장기적 매출로 연결됩니다.</p>
+                </div>
+                <div class="con09_img_div_m rltv">
+                  <div class="con09_step_absol_02_absol absol">
+                    <div class="con09_step_absol_02_rltv rltv">
+                      <div class="con09_step_absol_02_top rltv">
+                        <div class="con09_07_div">
+                          <img class="con09_07" src="/images/06_con09_07.png">
+                        </div>
+                        <div class="con09_08_div absol">
+                          <img class="con09_08" src="/images/06_con09_08.png">
+                        </div>
+                        <div class="con09_09_div absol">
+                          <img class="con09_09" src="/images/06_con09_09.png">
+                        </div>
+                        <div class="con09_10_div absol">
+                          <img class="con09_10" src="/images/06_con09_10.png">
+                        </div>
+                        <div class="con09_11_div absol">
+                          <img class="con09_11" src="/images/06_con09_11.png">
+                        </div>
+                      </div>
+                      <div class="con09_step_absol_02_bottom rltv">
+                        <div class="con09_07_1_div">
+                          <img class="con09_07_1" src="/images/06_con09_07_1.png">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="con09_swiper_slide_m swiper-slide">
+              <div class='con09_sd_div_m'>
+                <div class="con09_text_01">
+                  <p>03</p>
+                  <p>배달채널</p>
+                  <p>B2B 계약체결</p>
+                </div>
+                <div class="con09_text_02">
+                  <p>대한민국 주요 배달앱과 제휴를 맺고,</p>
+                  <p>단골 확보와 신규 고객 유치를 위해</p>
+                  <p>정기적인 이벤트 및 마케팅을 진행합니다.</p>
+                </div>
+                <div class="con09_img_div_m rltv">
+                  <div class="con09_12_div absol">
+                    <img class="con09_12" src="/images/06_con09_12.png">
+                  </div>
+                  <div class="con09_step_absol_03_01 absol">
+                    <div class="con09_step_absol_03_01_div">
+                      <img class="con09_img" src="/images/06_con09_13.png">
+                      <img class="con09_img" src="/images/06_con09_14.png">
+                    </div>
+                    <div class="con09_step_absol_03_02_div">
+                      <img class="con09_img" src="/images/06_con09_15.png">
+                      <img class="con09_img" src="/images/06_con09_16.png">
+                    </div>
+                    <div class="con09_step_absol_03_03_div">
+                      <img class="con09_img" src="/images/06_con09_17.png">
+                      <img class="con09_img" src="/images/06_con09_18.png">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="con09_swiper_slide_m swiper-slide">
+              <div class='con09_sd_div_m'>
+                <div class="con09_text_01">
+                  <p>04</p>
+                  <p>한국소비자만족지수 1위</p>
+                  <p>프랜차이즈(치킨) 부문 9년 연속 1위</p>
+                </div>
+                <div class="con09_text_02">
+                  <p>9년 연속 소비자만족지수 1위 수상!</p>
+                  <p>꾸준한 신뢰와 사랑으로 증명된 브랜드입니다.</p>
+                </div>
+                <div class="con09_img_div_m">
+                  <div class="con09_19_div absol">
+                    <img class="con09_19" src="/images/06_con09_19.png">
+                  </div>
+                  <div class="con09_20_div absol">
+                    <img class="con09_20" src="/images/06_con09_20.png">
+                  </div>
+                  <div class="con09_swiper_absol_01 absol">
+                    <div class="con09_swiper_y">
+                      <div class="con09_swiper_wrapper_y swiper-wrapper">
+
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_21.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_22.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_23.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_24.png">
+                          </div>
+                        </div>
+
+                      </div>
+                    </div> 
+                  </div>
+                  <div class="con09_swiper_absol_02 absol">
+                    <div class="con09_swiper_y2">
+                      <div class="con09_swiper_wrapper_y swiper-wrapper">
+
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_25.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_26.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_27.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_28.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_25.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_26.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_27.png">
+                          </div>
+                        </div>
+                        <div class="con09_swiper_slide_y swiper-slide">
+                          <div class='con09_sd_div_y'>
+                            <img class="con09_sd_img_y" src="/images/06_con09_28.png">
+                          </div>
+                        </div>
+
+                      </div>
+                    </div> 
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con10">
+  <div class="con10_content rltv">
+  <div class="con10_text_absol absol">
+    <p>서울, 경기 수도권 중심으로 시작한 호치킨</p>
+    <p>수도권에서 꾸준한 인기로 유지해 온 호치킨이</p>
+    <p>매출이 검증된 구조와 안정적인 운영 시스템으로</p>
+    <p>전국 각지로 뻗어 나아가고 있습니다.</p>
+  </div>
+  <div class="con10_arrow_absol absol">
+    <div class="con10_arrow_rltv rltv">
+      <div class="con10_11_div">
+        <img class="con10_11" src="/images/06_con10_11.png">
+      </div>
+      <div class="con10_10_div absol">
+        <img class="con10_10" src="/images/06_con10_10.png">
+      </div>
+    </div>
+  </div>
+  <div class="con10_09_div absol">
+    <img class="con10_09" src="/images/06_con10_09.png">
+  </div>
+  <div class="con10_08_div absol">
+    <img class="con10_08" src="/images/06_con10_08.png">
+  </div>
+  <div class="con10_12_div absol">
+    <img class="con10_12" src="/images/06_con10_12.png">
+  </div>
+    <div class="con10_div">
+      <div class="con10_div_01">
+        <p>꾸준히 확장 중인 지역 가맹망!</p>
+      </div>
+      <div class="con10_div_02">
+        <p>더 많은 지역,</p>
+      </div>
+      <div class="con10_div_03">
+        <p>더 많은 고객 곁으로</p>
+      </div>
+      <div class="con10_div_04">
+        <div class="con10_div_04_rltv rltv">
+          <div class="con10_02_div absol">
+            <img class="con10_02" src="/images/06_con10_02.png">
+          </div>
+          <div class="con10_01_div absol">
+            <img class="con10_01" src="/images/06_con10_01.png">
+          </div>
+          <div class="con10_06_div_01 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_02 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_03 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_04 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_05 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_06 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_07 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_06_div_08 absol">
+            <img class="con10_06" src="/images/06_con10_06.png">
+          </div>
+          <div class="con10_nv_absol absol">
+            <div class="con10_nv_rltv rltv">
+              <div class="con10_03_div">
+                <img class="con10_03" src="/images/06_con10_03.png">
+              </div>
+              <div class="con10_04_div absol">
+                <img class="con10_04" src="/images/06_con10_04.png">
+              </div>
+              <div class="con10_05_div absol">
+                <img class="con10_05" src="/images/06_con10_05.png">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con11">
+  <div class="con11_content">
+    <div class="con11_div">
+      <div class="con11_left">
+        <div class="con11_left_div">
+          <div class="con11_left_div_01">
+            <div class="con11_01_div">
+              <img class="con11_01" src="/images/06_con11_01.png">
+            </div>
+          </div>
+          <div class="con11_left_div_02">
+            <p>치킨 전문 기업의</p>
+          </div>
+          <div class="con11_left_div_03">
+            <p>튼튼한</p>
+            <p>본사지원</p>
+          </div>
+          <div class="con11_left_div_04">
+            <div class="con11_02_div">
+              <img class="con11_02" src="/images/06_con11_02.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con11_right">
+        <div class="con11_right_div rltv">
+          <div class="con11-button-prev absol">
+            <div class="con11_button_rltv rltv">
+              <img class="con11_button_img" src="/images/button_img.png">
+              <img class="con11_button_absol_img absol" src="/images/button_absol_img.png">
+            </div>
+          </div>
+          <div class="con11-button-next absol">
+            <div class="con11_button_rltv rltv">
+              <img class="con11_button_img" src="/images/button_img.png">
+              <img class="con11_button_absol_img absol" src="/images/button_absol_img.png">
+            </div>
+          </div>
+          <div class="con11_swiper">
+            <div class="con11_swiper_wrapper swiper-wrapper">
+
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>프랜차이즈 전문가의 창업컨설팅</p>
+                    <p>철저한 상권 분석과 시장 동향 조사</p>
+                    <p>기반으로 전문가가 체계적인 창업 컨설팅을</p>
+                    <p>제공합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>꾸준한 품질개발</p>
+                    <p>좋은 재료만을 엄선하여 고품질 제품을</p>
+                    <p>유지하며, 고객의 입맛과 트렌드에 맞춘</p>
+                    <p>지속적인 메뉴 연구를 진행합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>안정적인 물류 시스템</p>
+                    <p>본사 자체 물류 시스템을 통해</p>
+                    <p>높은 마진율은 물론, 원가 절감과</p>
+                    <p>신속한 배송을 실현합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>적극적인 마케팅 지원</p>
+                    <p>TV 광고, SNS, 배달 앱 프로모션 등</p>
+                    <p>다양한 채널을 통한 마케팅으로 </p>
+                    <p>가맹점 운영을 적극 지원합니다.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>프랜차이즈 전문가의 창업컨설팅</p>
+                    <p>철저한 상권 분석과 시장 동향 조사</p>
+                    <p>기반으로 전문가가 체계적인 창업 컨설팅을</p>
+                    <p>제공합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>꾸준한 품질개발</p>
+                    <p>좋은 재료만을 엄선하여 고품질 제품을</p>
+                    <p>유지하며, 고객의 입맛과 트렌드에 맞춘</p>
+                    <p>지속적인 메뉴 연구를 진행합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>안정적인 물류 시스템</p>
+                    <p>본사 자체 물류 시스템을 통해</p>
+                    <p>높은 마진율은 물론, 원가 절감과</p>
+                    <p>신속한 배송을 실현합니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="con11_swiper_slide swiper-slide">
+                <div class='con11_sd_div rltv'>
+                  <div class="con11_text_absol absol">
+                    <p>적극적인 마케팅 지원</p>
+                    <p>TV 광고, SNS, 배달 앱 프로모션 등</p>
+                    <p>다양한 채널을 통한 마케팅으로 </p>
+                    <p>가맹점 운영을 적극 지원합니다.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con12">
+  <div class="con12_content">
+    <div class="con12_div">
+      <div class="con12_div_01">
+        <p>4 KEY</p>
+        <p>BENEFITS.</p>
+      </div>
+      <div class="con12_div_02">
+        <p>호치킨 창업, 지금이 기회입니다.</p>
+        <p>오직 지금, 창업자만을 위한 4가지 혜택 제공!</p>
+      </div>
+      <div class="con12_div_03 pc-mobile">
+        <div class="con12_div_03_side pc-mobile">
+          <div class="con12_div_03_side_s rltv">
+            <p>가맹비</p>
+            <p>한시적 면제</p>
+            <div class="con12_div_03_absol absol" id="con12_div_03_absol_01">
+              <p>가맹비</p>
+              <p>한시적 면제</p>
+            </div>
+          </div>
+          <div class="con12_div_03_side_s rltv">
+            <p>내외부사인</p>
+            <p>본사지원</p>
+            <div class="con12_div_03_absol absol" id="con12_div_03_absol_02">
+              <p>내외부사인</p>
+              <p>본사지원</p>
+            </div>
+          </div>
+        </div>
+        <div class="con12_div_03_center rltv pc-mobile">
+          <div class="con12_img_div absol" id="con12_img_01">
+            <img class="con12_img" src="/images/06_con12_03.png">
+          </div>
+          <div class="con12_img_div absol" id="con12_img_02">
+            <img class="con12_img" src="/images/06_con12_04.png">
+          </div>
+          <div class="con12_img_div absol" id="con12_img_03">
+            <img class="con12_img" src="/images/06_con12_05.png">
+          </div>
+          <div class="con12_img_div absol" id="con12_img_04">
+            <img class="con12_img" src="/images/06_con12_06.png">
+          </div>
+        </div>
+        <div class="con12_div_03_side pc-mobile">
+          <div class="con12_div_03_side_s rltv">
+            <div class="con12_div_03_side_s rltv">
+              <p>로열티</p>
+              <p>한시적 면제</p>
+              <div class="con12_div_03_absol absol" id="con12_div_03_absol_03">
+                <p>로열티</p>
+                <p>한시적 면제</p>
+              </div>
+            </div>
+          </div>
+          <div class="con12_div_03_side_s rltv">
+            <div class="con12_div_03_side_s rltv">
+              <p>POS</p>
+              <p>무상지원</p>
+              <div class="con12_div_03_absol absol" id="con12_div_03_absol_04">
+                <p>POS</p>
+                <p>무상지원</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con12_div_m mobile-pc">
+        <div class="con12_swiper_m">
+          <div class="con12_swiper_wrapper_m swiper-wrapper">
+
+            <div class="con12_swiper_slide_m swiper-slide">
+              <div class='con12_sd_div_m'>
+                <div class='con12_sd_img_div_m'>
+                  <img class="con12_sd_img_m" src="/images/06_con12_03.png">
+                </div>
+                <div class='con12_sd_text_div_m'>
+                  <p>가맹비</p>
+                  <p>한시적 면제</p>
+                </div>
+              </div>
+            </div>
+            <div class="con12_swiper_slide_m swiper-slide">
+              <div class='con12_sd_div_m'>
+                <div class='con12_sd_img_div_m'>
+                  <img class="con12_sd_img_m" src="/images/06_con12_04.png">
+                </div>
+                <div class='con12_sd_text_div_m'>
+                  <p>로열티</p>
+                  <p>한시적 면제</p>
+                </div>
+              </div>
+            </div>
+            <div class="con12_swiper_slide_m swiper-slide">
+              <div class='con12_sd_div_m'>
+                <div class='con12_sd_img_div_m'>
+                  <img class="con12_sd_img_m" src="/images/06_con12_05.png">
+                </div>
+                <div class='con12_sd_text_div_m'>
+                  <p>내외부사인</p>
+                  <p>본사지원</p>
+                </div>
+              </div>
+            </div>
+            <div class="con12_swiper_slide_m swiper-slide">
+              <div class='con12_sd_div_m'>
+                <div class='con12_sd_img_div_m'>
+                  <img class="con12_sd_img_m" src="/images/06_con12_06.png">
+                </div>
+                <div class='con12_sd_text_div_m'>
+                  <p>POS</p>
+                  <p>무상지원</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con13">
+  <div class="con13_content">
+    <div class="con13_div">
+      <div class="con13_div_01">
+        <div class="con13_01_div">
+          <img class="con13_01" src="/images/06_con13_01.png">
+        </div>
+      </div>  
+      <div class="con13_div_02">
+        <p>입안 가득,</p>
+        <p>호(好)</p>
+        <p>를 담다</p>
+      </div>  
+      <div class="con13_div_03">
+        <p>입맛 따라 골라 먹는 즐거움, 호치킨의 인기 메뉴를 지금 만나보세요.</p>
+      </div> 
+      <div class="con13_div_04">
+        <div class="con13_swiper">
+          <div class="con13_swiper_wrapper swiper-wrapper">
+
+              <?php for ($i=0; $i<count($chicken_list); $i++) {
+                    $file2 = get_file($table_chicken, $chicken_list[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="con13_swiper_slide swiper-slide">
+                  <div class='con13_sd_div'>
+                    <div class="con13_sd_img_div">
+                      <img class="con13_sd_img" src="<?php echo $file_src2; ?>">
+                    </div>
+                    <div class="con13_sd_title_div">
+                      <p><?php echo $chicken_list[$i]['wr_subject'] ?></p>
+                    </div>
+                    <div class="con13_sd_content_div">
+                      <p><?php echo $chicken_list[$i]['wr_2'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+              <?php for ($i=0; $i<count($chicken_list); $i++) {
+                    $file2 = get_file($table_chicken, $chicken_list[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="con13_swiper_slide swiper-slide">
+                  <div class='con13_sd_div'>
+                    <div class="con13_sd_img_div">
+                      <img class="con13_sd_img" src="<?php echo $file_src2; ?>">
+                    </div>
+                    <div class="con13_sd_title_div">
+                      <p><?php echo $chicken_list[$i]['wr_subject'] ?></p>
+                    </div>
+                    <div class="con13_sd_content_div">
+                      <p><?php echo $chicken_list[$i]['wr_2'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+
+            
+  
+<!--
+            <div class="con13_swiper_slide swiper-slide">
+              <div class='con13_sd_div'>
+                <div class="con13_sd_img_div">
+                  <img class="con13_sd_img" src="/images/06_con13_02.png">
+                </div>
+                <div class="con13_sd_title_div">
+                  <p>맛나게 맵닭</p>
+                </div>
+                <div class="con13_sd_content_div">
+                  <p>어른들의 매운 맛, 극강의 매운 맛 치킨</p>
+                </div>
+              </div>
+            </div>
+-->
+
+          </div>
+        </div> 
+      </div> 
+    </div>
+  </div>
+</section>
+<section class="con14">
+  <div class="con14_content">
+    <div class="con14_div rltv">
+      <div class='con14_02_div absol'>
+        <img class="con14_02" src="/images/06_con14_02.png">
+      </div>
+      <div class="con14_ct_absol absol">
+        <div class="con14_ct_rltv rltv">
+          <p>재방문율</p>
+          <p class="con14_ct" id="con14_ct">86</p>
+          <p>%</p>
+        </div>
+      </div>
+      <div class="con14_div_01">
+        <p>맛있게 먹은 사람들의 진심</p>
+      </div>
+      <div class="con14_div_02">
+        <p>REAL</p>
+        <p>REVIEW.</p>
+      </div>
+      <div class="con14_div_03 rltv">
+        <div class='con14_03_div absol'>
+          <img class="con14_03" src="/images/06_con14_03.png">
+        </div>
+        <div class='con14_blk_absol absol'>
+          <div class='con14_blk_rltv rltv'>
+            <div class='con14_04_blk_div absol'>
+              <img class="con14_04_blk" src="/images/06_con14_04-1.png">
+            </div>
+            <div class='con14_04_div'>
+              <img class="con14_04" src="/images/06_con14_04.png">
+            </div>
+          </div>
+        </div>
+        <div class="con14_swiper">
+          <div class="con14_swiper_wrapper swiper-wrapper">
+
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_06.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_07.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_08.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_09.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_10.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_11.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_12.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_13.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_14.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_15.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_16.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_17.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_18.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_19.jpg">
+              </div>
+            </div>
+            <div class="con14_swiper_slide swiper-slide">
+              <div class='con14_sd_div'>
+                <img class="con14_sd_img" src="/images/06_con14_20.jpg">
+              </div>
+            </div>
+
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="con15_content">
+    <div class="con15_div">
+      <div class="con15_div_01">
+        <p>투명하고 합리적인</p>
+        <p>창업비용</p>
+      </div>
+      <div class="con15_div_02">
+        <p>호치킨은 불필요한 비용을 줄이고, 합리적인 비용으로 실속 있는 창업을 제안합니다.</p>
+      </div>
+      <div class="con15_div_03 rltv">
+        <div class="con15_01_div pc-mobile">
+          <img class="con15_01" src="/images/06_con15_01.png">
+        </div>
+        <div class="con15_01m_div mobile-pc">
+          <img class="con15_01m" src="/images/06_con15_01m.png">
+        </div>
+        <div class="con15_02_div absol">
+          <img class="con15_02" src="/images/06_con15_02.png">
+        </div>
+      </div>
+      <div class="con15_div_04">
+        <p>*철거, 전기증설, 음향, 냉난방기, 급기/배기, 닥트, 폴딩도어 등 점포 조건에 따라 상이</p>
+        <p>*업종 변경 시 주방, 홀인테리어 설비 재사용 및 부분공사 가능, 주방 장비/기물, 의탁자 등 재활용 가능</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="form_section">
+  <div class="form_content rltv">
+    <div class="con16_02_div absol">
+      <img class="con16_02" src="/images/06_con16_02.png">
+    </div>
+    <div class="form_title_div">
+      <div class="form_title_01">
+        <p>지금, 호치킨이 궁금하다면?</p>
+      </div>
+      <div class="form_title_02">
+        <p>창업</p>
+        <p>문의</p>
+      </div>
+
+      <div class="formWrap_div rltv">
+        <div class="formWrap">
+          <form class="form" name="formmail" method="post">
+            <div class="form_div_01">
+              <p>상담자 정보</p>
+            </div>
+            <div class="form_div_02">
+              <input class="agree_checkbox" type="checkbox">
+              <p class="agree_text">개인정보 취급 방침을 읽었으며 이에 동의합니다.</p>
+            </div>
+            <div class="form_div">
+              <div class="form_left">
+                <div class="form_left_left rltv">
+                  <p>성함</p>
+                  <img class="con16_01 absol" src="/images/06_con16_01.png">
+                </div>
+                <div class="form_left_right">
+                  <input id="name" name="name" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+              <div class="form_right">
+                <div class="form_right_left rltv">
+                  <p>연락처</p>
+                  <img class="con16_01 absol" src="/images/06_con16_01.png">
+                </div>
+                <div class="form_right_right">
+                  <input id="tel" name="tel" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="form_div">
+              <div class="form_left">
+                <div class="form_left_left rltv">
+                  <p>창업희망지역</p>
+                  <img class="con16_01 absol" src="/images/06_con16_01.png">
+                </div>
+                <div class="form_left_right">
+                  <input id="area" name="area" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+              <div class="form_right">
+                <div class="form_right_left">
+                  <p>점포유무</p>
+                </div>
+                <div class="form_right_right">
+                  <input id="have" name="have" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="form_div">
+              <div class="form_left">
+                <div class="form_left_left">
+                  <p>창업희망시기</p>
+                </div>
+                <div class="form_left_right">
+                  <input id="period" name="period" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+              <div class="form_right">
+                <div class="form_right_left">
+                  <p>보유자금</p>
+                </div>
+                <div class="form_right_right">
+                  <input id="gold" name="gold" class="form_input_01 xss_check" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="form_index_div">
+              <div class="form_index_left rltv">
+                <p>문의내용</p>
+                <img class="con16_01_02 absol" src="/images/06_con16_01.png">
+              </div>
+              <div class="form_index_right">
+                <textarea class="form_input_02" id="form_index" name="form_index" rows="4" placeholder="문의 내용을 입력하세요"></textarea>
+              </div>
+            </div>
+            <div class="form_button_div">
+              <div class="form_button">
+                <p>문의하기</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- 
+<div class="main_01_div">
+  <img class="main_01" src="/images/main_01.png">
+</div>
+
+<div class="con03_scr rltv">
+  <img class="sd" src="/images/con01_12.png">
+  <img class="sd sd_next absol" src="/images/con01_12.png">
+</div>
+
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+
+    </div>
+  </div>
+</section>
+
+<div class="main_video_div absol">
+  <div class="main_video_rltv rltv">
+    <iframe class="main_video absol" src="https://www.youtube.com/embed/YrDai3SbErc?autoplay=1&mute=1&loop=1&playlist=YrDai3SbErc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<div class="con01_swiper">
+  <div class="con01_swiper_wrapper swiper-wrapper">
+
+    <div class="con01_swiper_slide swiper-slide">
+      <div class='con01_sd_div'>
+
+      </div>
+    </div>
+
+  </div>
+</div> 
+
+-->
+<div id="footer"></div>
+</body>
+<script src="https://unpkg.com/split-type"></script>
+<!--gsap JS Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<!--Swiper JS Library-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!--jquery cdn-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- <script src="/js/map.js"></script> -->
+<script src="/js/width_calculator.js"></script>
+<script src="/js/gsap_contact.js"></script>
+<script src="/js/script_contact.js"></script>
+</html>
+
+
+
+
+
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/contact/script.js" ></script>
+  

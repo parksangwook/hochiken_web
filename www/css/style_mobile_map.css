@@ -1,0 +1,220 @@
+@media screen and (max-width:599px) {
+    .pc-mobile{
+        display: none !important;
+    }
+    .mobile-pc{
+        display: flex !important;
+    }
+    #modalImage {
+        width: 96%;
+        margin: -4% 0% 0% 0%;
+    }
+
+    .map_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 15% 0% 0% 0%;
+    }
+    .map_div_01 {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        font-family: 'Paperozi', sans-serif;
+        font-weight: 900;
+        font-size: 9vw;
+        margin: 8% 0% 4% 0%;
+    }
+    .map {
+        background-color: #fff;
+        width: 100%;
+        height: 48vw;
+        z-index: 1;
+        overflow: hidden;
+        border: solid 1.5px #000;
+        border-radius: 10px 10px 0px 0px;
+    }
+    .map_div_03 {
+        height: 13vw;
+        border-radius: 0px 0px 10px 10px;
+    }
+    .map_search {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 69%;
+    }
+    .map_search input {
+        appearance: none;
+        border: none;
+        outline: none;
+        width: 90%;
+        height: 6.5vw;
+        padding-left: 5%;
+        font-family: 'Pretendard';
+        font-size: 3.2vw;
+        background-color: #fff;
+        color: #000;
+        border-radius: 50vw;
+    }
+    .map_icon {
+        width: 11%;
+        cursor: pointer;
+        pointer-events: all;
+    }
+    .map_list_div_s {
+        height: 11vw;
+    }
+    .map_div_af > p:nth-of-type(1) {
+        font-family: 'Paperozi', sans-serif;
+        font-weight: 700;
+        font-size: 3.5vw;
+        width: 23%;
+        white-space: nowrap;
+    }
+    .map_div_af > p:nth-of-type(2) {
+        font-family: "Pretendard";
+        font-weight: 500;
+        font-size: 3.2vw;
+        color: #000;
+        width: 53%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .map_view_more {
+        width: 9%;
+        height: 4.5vw;
+        font-size: 4vw;
+    }
+    .map_div_bf_rltv > p:nth-of-type(1) {
+        position: absolute;
+        font-family: 'Paperozi', sans-serif;
+        font-weight: 700;
+        font-size: 4.5vw;
+        left: 8%;
+        top: 9%;
+        width: 59%;
+    }
+    .map_list_img_div {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 68%;
+        left: 7%;
+        top: 18%;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .map_list_text_absol {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        left: 8%;
+        top: 57%;
+    }
+    .map_list_text_div {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        margin: 0% 0% 5% 0%;
+    }
+    .map_list_text_div > p:nth-of-type(1) {
+        font-family: "Pretendard";
+        font-weight: 700;
+        font-size: 3.2vw;
+        color: #000;
+        margin: 0% 5% 0% 1.5%;
+    }
+    .map_list_text_div2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        font-family: "Pretendard";
+        font-weight: 500;
+        font-size: 3.2vw;
+        color: #000;
+        margin: 0% 0% 7% 0%;
+    }
+    .map_list_text_div > p:nth-of-type(2) {
+        font-family: "Pretendard";
+        font-weight: 500;
+        font-size: 3.2vw;
+        color: #000;
+    }
+    .pagination button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3vw;
+    }
+    .map_div {
+        margin: 0% 0% 12% 0%;
+    }
+
+
+
+
+    /* 
+    background: url("/images/con3_bg.jpg") no-repeat center / cover; 
+    object-fit: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    flex-wrap: wrap;
+
+    font-family: 'LOTTERIACHAB';
+
+    font-family: "Pretendard";
+    font-weight: 400;
+    font-size: 1vw;
+    color: #000;
+
+    . p:nth-of-type(1)
+
+    .con08_swiper{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+    }
+    .con08_swiper_slide{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_img{
+        width: 100%;
+    }
+    .con08_swiper_slide.swiper-slide-next > div {
+
+    }
+*/
+}

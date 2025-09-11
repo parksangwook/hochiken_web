@@ -1,0 +1,200 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/map/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? $_GET['co_id'] : '';
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+// g5_write_table_map 데이터 가져오기
+$sql = "SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_map";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+
+$list5 = array();
+$i = 0;
+$sql = "SELECT * FROM g5_write_table_map ORDER BY wr_1*1 DESC";
+$table_map = 'table_map';
+$board['bo_table'] = 'g5_write_table_map';
+$result = sql_query($sql);
+$k = 0;
+
+while ($row = sql_fetch_array($result)) {
+    $list5[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $list5[$i]['is_notice'] = false;
+    $list5[$i]['num'] = $list_num - $k;
+    $i++;
+    $k++;
+}
+
+// 다른 테이블 카운트 예시
+$sql_count = "SELECT COUNT(*) AS record_count FROM {$g5['new_win_table']}
+              WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+              AND nw_device IN ('both', 'pc') AND nw_division IN ('both', '".$pop_division."')";
+$result_count = sql_fetch($sql_count);
+$record_count = $result_count['record_count'];
+?>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--CSS-->
+<link rel="stylesheet" href="/css/style_map.css" />
+<link rel="stylesheet" href="/css/style_mobile_map.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+<!--카카오맵-->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=4239a104d239162d6b7a299326b7fcee&libraries=services"></script>
+<!--폰트-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+<div id="header"></div>
+
+<section class="map_section" id="map_section">
+  <div class="map_content" id="top_move">
+    <div class="map_div">
+      <div class="map_div_01">
+        <p>Store</p>
+        <p>.</p>
+      </div>
+      <div class="map_div_02 rltv">
+        <div class="map" id="map"></div>
+      </div>
+      <div class="map_div_03">
+        <div class="map_search rltv">
+          <input class="direct show" id="direct" type="text" placeholder="검색어를 입력해주세요.">
+          <img class="map_icon" id="map_icon" src="/images/04_con01_04.png">
+        </div>
+      </div>
+
+      <div class="map_list_div">
+<?php for ($i=0; $i<count($list5); $i++):
+    $file2 = get_file($table_map, $list5[$i]['wr_id']);
+
+    // 기본 이미지 설정
+    $file_src2 = '/images/map_no_img.png';
+
+    // 실제 파일이 있으면 해당 경로 사용
+    if (!empty($file2) && !empty($file2[0]['file'])) {
+        $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+    }
+?>
+<div class="store map_list_div_s rltv <?php echo $list5[$i]['wr_subject'].' '.$list5[$i]['wr_4'].' '.$list5[$i]['wr_2']; ?>"
+     data-value="<?php echo $i; ?>"
+     data-subject="<?php echo $list5[$i]['wr_subject']; ?>"
+     data-wr_4="<?php echo $list5[$i]['wr_4']; ?>"
+     data-wr_2="<?php echo $list5[$i]['wr_2']; ?>">
+  
+  <div class="map_view_more absol" data-value="open"><p>+</p></div>
+  
+  <div class="map_div_bf absol">
+    <div class="map_div_bf_rltv rltv">
+      <p><?php echo $list5[$i]['wr_subject']; ?></p>
+      <div class="map_list_img_div">
+        <img class="map_list_img" src="<?php echo $file_src2; ?>" style="width: 100%;">
+      </div>
+      <div class="map_list_text_absol absol">
+        <div class="map_list_text_div">
+          <img class="map_giho_img_01" src="/images/04_con01_07.png"><p>주소</p>
+        </div>
+        <div class="map_list_text_div2">
+          <p><?php echo $list5[$i]['wr_2']; ?></p>
+        </div>
+        <div class="map_list_text_div">
+          <img class="map_giho_img_02" src="/images/04_con01_08.png"><p>전화번호</p>
+          <p><?php echo $list5[$i]['wr_3']; ?></p>
+        </div>
+        <div class="map_list_text_div">
+          <img class="map_giho_img_03" src="/images/04_con01_09.png"><p>영업시간</p>
+          <p><?php echo $list5[$i]['wr_4']; ?></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="map_div_af absol">
+    <p><?php echo $list5[$i]['wr_subject']; ?></p>
+    <p><?php echo $list5[$i]['wr_2']; ?></p>
+  </div>
+
+</div>
+<?php endfor; ?>
+
+
+
+      </div>
+      <div id="pagination" class="pagination"></div>
+    </div>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script>
+  var array = <?php echo json_encode($list5)?>;
+//  console.log("array : " + array);
+$(document).on('click', '.store.map_list_div_s', function() {
+    var subject = $(this).data('subject');
+    var wr_4 = $(this).data('wr_4');
+    var wr_2 = $(this).data('wr_2');
+
+    $(".map_rimit").data('value', 'off');
+    console.log($(".map_rimit").data('value'));
+
+    markerMove(subject);
+
+    $('#dynamicContent .mid_map_search_item_title').text(subject);
+    $('#dynamicContent .mid_map_search_item_addres').text(wr_4);
+    $('#dynamicContent .mid_map_search_item_tel').text(wr_2);
+});
+</script>
+
+<!-- 외부 라이브러리 -->
+<script src="https://unpkg.com/split-type"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<!-- 프로젝트 JS -->
+<script src="/js/width_calculator.js"></script>
+<script src="/js/gsap_map.js"></script>
+<script src="/js/script_map.js"></script>
+<script src="/js/map.js"></script>
+<script src="<?=G5_THEME_URL?>/template/map/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+@media screen and (max-width:599px) {
+    .pc-mobile{
+        display: none !important;
+    }
+    .mobile-pc{
+        display: flex !important;
+    }
+    #modalImage {
+        width: 96%;
+        margin: -4% 0% 0% 0%;
+    }
+
+    .main_div_01 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 15% 0% 0% 0%;
+    }
+    .main_div_01_img_div {
+        width: 210% !important;
+    }
+    .main_text {
+        font-size: 9vw;
+    }
+    .menu_div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 14% 0% 14% 0%;
+    }
+    .menu_button_div {
+        background-color: #f1f1f1;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 85%;
+        height: 11vw;
+        border-radius: 25vw;
+        padding-right: 2%;
+    }
+    .menu_button_s {
+        font-size: 3.2vw;
+        width: 23%;
+    }
+    .menu_border_button_02_s {
+        font-size: 3.2vw;
+        width: 20%;
+        height: 6.5vw;
+    }
+    .menu_border_button_02 {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 5% 0% 6% 0%;
+    }
+    .menu_border {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 123vw;
+    }
+    .menu_border_02_rltv {
+        width: 95%;
+    }
+    .menu_border_frame {
+        width: 48%;
+    }
+    .menu_text_div {
+        font-size: 3.2vw;
+    }
+    .menu_absol{
+        height: 50vw;
+    }
+    .menu_rltv > p:nth-of-type(1) {
+        font-family: 'Montserrat';
+        font-weight: 700;
+        font-size: 4vw;
+        color: #fff;
+        text-align: center;
+    }
+    .menu_rltv > p:nth-of-type(2) {
+        font-family: 'Montserrat';
+        font-weight: 500;
+        font-size: 3.2vw;
+        color: #fff;
+        width: 80%;
+        text-align: center;
+        margin: 5% 0% -10% 0%;
+        height: 20vw;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .menu_rltv > p:nth-of-type(2)::-webkit-scrollbar {
+        display: none;
+    }
+    .menu_type {
+        width: 40%;
+    }
+    .menu_border_div_rltv{
+       width: 94%;
+        margin: 8% 0% 0% 0%;
+    }
+    .pagination_menu_01_01 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_01_01 {
+        margin: 3% 0% 0% 0%;
+    }
+    .pagination_menu_01_02 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_01_02 {
+        margin: 3% 0% 0% 0%;
+    }
+    .pagination_menu_01_03 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_01_03 {
+        margin: 3% 0% 0% 0%;
+    }
+    .pagination_menu_02_01 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_02_01 {
+        margin: 3% 0% 0% 0%;
+    }
+    .pagination_menu_02_02 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_02_02 {
+        margin: 3% 0% 0% 0%;
+    }
+    .pagination_menu_02_03 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_menu_02_03 {
+        margin: 3% 0% 0% 0%;
+    }
+
+
+
+
+
+
+
+
+    /* 
+    background: url("/images/con3_bg.jpg") no-repeat center / cover; 
+    object-fit: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    flex-wrap: wrap;
+
+    font-family: 'LOTTERIACHAB';
+
+    font-family: "Pretendard";
+    font-weight: 400;
+    font-size: 1vw;
+    color: #000;
+
+    . p:nth-of-type(1)
+
+    .con08_swiper{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+    }
+    .con08_swiper_slide{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_img{
+        width: 100%;
+    }
+    .con08_swiper_slide.swiper-slide-next > div {
+
+    }
+*/
+}

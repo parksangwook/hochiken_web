@@ -1,0 +1,569 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/menu/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? $_GET['co_id'] : '';
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+
+
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_chicken where ca_name='오리지널'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$chicken_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_chicken where ca_name='오리지널' order by wr_1*1 desc";
+$table_chicken ='table_chicken';
+$board['bo_table'] ='g5_write_table_chicken';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $chicken_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $chicken_list_01[$i]['is_notice'] = false;
+    $chicken_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_chicken where ca_name='시그니처'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$chicken_list_02 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_chicken where ca_name='시그니처' order by wr_1*1 desc";
+$table_chicken ='table_chicken';
+$board['bo_table'] ='g5_write_table_chicken';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $chicken_list_02[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $chicken_list_02[$i]['is_notice'] = false;
+    $chicken_list_02[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_chicken where ca_name='오븐'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$chicken_list_03 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_chicken where ca_name='오븐' order by wr_1*1 desc";
+$table_chicken ='table_chicken';
+$board['bo_table'] ='g5_write_table_chicken';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $chicken_list_03[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $chicken_list_03[$i]['is_notice'] = false;
+    $chicken_list_03[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='피자'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='피자' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_01[$i]['is_notice'] = false;
+    $menu_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='사이드'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_02 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='사이드' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_02[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_02[$i]['is_notice'] = false;
+    $menu_list_02[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='안주류'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_03 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='안주류' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_03[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_03[$i]['is_notice'] = false;
+    $menu_list_03[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+?>
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Common CSS-->
+  <link rel="stylesheet" href="/css/style_menu.css" />
+  <link rel="stylesheet" href="/css/style_mobile_menu.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=59342328786c20d832cb92365910ef7a&amp;libraries=services"></script> 
+  <!--Font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" /> 
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="header"></div>
+<section class="main" id="top_move">
+  <div class="main_content">
+    <div class="main_div_01 rltv">
+      <div class="main_div_01_img_div">
+        <img class="main_div_01_img" src="/images/03_top_01.png">
+      </div>
+      <div class="main_text absol">
+        <p>Menu</p>
+        <p>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="menu_section" id="menu_move">
+  <div class="menu_content">
+    <div class="menu_div">
+
+      <div class="menu_button_div">
+        <div class="menu_button_s" data-value="step_01">
+          <p>치킨</p>
+        </div>
+        <div class="menu_button_s" data-value="step_02">
+          <p>피자</p>
+        </div>
+        <div class="menu_button_s" data-value="step_03">
+          <p>사이드</p>
+        </div>
+        <div class="menu_button_s" data-value="step_04">
+          <p>안주/홀메뉴</p>
+        </div>
+      </div>
+      
+      <div class="menu_border rltv">
+        <div class="menu_border_div absol" id="menu_border_div_01">
+          <div class="menu_border_rltv rltv">
+
+            <div class="menu_border_button_02">
+              <div class="menu_border_button_02_s" data-value="step_01">
+                <p>오리지날</p>
+              </div>
+              <div class="menu_border_button_02_s" data-value="step_02">
+                <p>시그니처</p>
+              </div>
+              <div class="menu_border_button_02_s" data-value="step_03">
+                <p>오븐</p>
+              </div>
+            </div>
+
+            <div class="menu_border_02_div_div rltv">
+
+              <div class="menu_border_02_div absol" id="menu_border_02_div_01">
+                <div class="menu_border_02_rltv rltv" id="list_wrap_02_01">
+                  
+              <?php for ($i=0; $i<count($chicken_list_01); $i++) {
+                $file2 = get_file($table_chicken, $chicken_list_01[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($chicken_list_01[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($chicken_list_01[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $chicken_list_01[$i]['wr_subject'] ?></p>
+                        <p><?php echo $chicken_list_01[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $chicken_list_01[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?> 
+
+               
+<!--
+                  <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <img class="menu_new_img" src="/images/01_con02_04.png">
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p>페퍼스넥</p>
+                        <p>1% 특수부위 닭목살을 매콤한 통후추와 함께 바삭하게 튀겨낸, 맥주와 환상 궁합인 메뉴</p>
+                        <img class="menu_absol_img" src="/images/01_con02_05.png">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src="/images/01_con02_05.png">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p>치슐랭</p>
+                    </div>
+                  </div>
+-->
+
+                  <div class="pagination_menu_01_01"></div>
+
+                </div>
+              </div>
+
+              <div class="menu_border_02_div absol" id="menu_border_02_div_02">
+                <div class="menu_border_02_rltv rltv" id="list_wrap_02_02">
+                  
+                  <?php for ($i=0; $i<count($chicken_list_02); $i++) {
+                $file2 = get_file($table_chicken, $chicken_list_02[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($chicken_list_02[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($chicken_list_02[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $chicken_list_02[$i]['wr_subject'] ?></p>
+                        <p><?php echo $chicken_list_02[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $chicken_list_02[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?>
+
+                  <div class="pagination_menu_01_02"></div>
+
+                </div>
+              </div>
+
+              <div class="menu_border_02_div absol" id="menu_border_02_div_03">
+                <div class="menu_border_02_rltv rltv" id="list_wrap_02_03">
+                  
+                  <?php for ($i=0; $i<count($chicken_list_03); $i++) {
+                $file2 = get_file($table_chicken, $chicken_list_03[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($chicken_list_03[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($chicken_list_03[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $chicken_list_03[$i]['wr_subject'] ?></p>
+                        <p><?php echo $chicken_list_03[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $chicken_list_03[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?>
+
+                  <div class="pagination_menu_01_03"></div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="menu_border_div absol" id="menu_border_div_02">
+          <div class="menu_border_div_rltv rltv">
+
+            <?php for ($i=0; $i<count($menu_list_01); $i++) {
+                $file2 = get_file($menu_table, $menu_list_01[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_01[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_01[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_01[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_01[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $menu_list_01[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?>
+            
+            <div class="pagination_menu_02_01"></div>
+
+          </div>
+        </div>
+        <div class="menu_border_div absol" id="menu_border_div_03">
+          <div class="menu_border_div_rltv rltv">
+
+            <?php for ($i=0; $i<count($menu_list_02); $i++) {
+                $file2 = get_file($menu_table, $menu_list_02[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_02[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_02[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_02[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_02[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $menu_list_02[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?>
+
+            <div class="pagination_menu_02_02"></div>
+
+          </div>
+        </div>
+        <div class="menu_border_div absol" id="menu_border_div_04">
+          <div class="menu_border_div_rltv rltv">
+
+            <?php for ($i=0; $i<count($menu_list_03); $i++) {
+                $file2 = get_file($menu_table, $menu_list_03[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                }?>
+                 <div class="menu_border_frame rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_03[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_03[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_03[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_03[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_img_div_rltv rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="menu_text_div">
+                      <p><?php echo $menu_list_03[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+              <?php } ?>
+
+            <div class="pagination_menu_02_03"></div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- 
+<div class="main_01_div">
+  <img class="main_01" src="/images/main_01.png">
+</div>
+
+<div class="con03_scr rltv">
+  <img class="sd" src="/images/con01_12.png">
+  <img class="sd sd_next absol" src="/images/con01_12.png">
+</div>
+
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+
+    </div>
+  </div>
+</section>
+
+<div class="main_video_div absol">
+  <div class="main_video_rltv rltv">
+    <iframe class="main_video absol" src="https://www.youtube.com/embed/YrDai3SbErc?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=YrDai3SbErc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<div class="con01_swiper">
+  <div class="con01_swiper_wrapper swiper-wrapper">
+
+    <div class="con01_swiper_slide swiper-slide">
+      <div class='con01_sd_div'>
+
+      </div>
+    </div>
+
+  </div>
+</div> 
+
+-->
+<div id="footer"></div>
+</body>
+<script src="https://unpkg.com/split-type"></script>
+<!--gsap JS Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<!--Swiper JS Library-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!--jquery cdn-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="/js/width_calculator.js"></script>
+<script src="/js/map.js"></script>
+<script src="/js/gsap_menu.js"></script>
+<script src="/js/script_menu.js"></script>
+</html>
+
+
+
+
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/menu/script.js" ></script>
+  

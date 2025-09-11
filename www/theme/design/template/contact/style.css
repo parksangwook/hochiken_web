@@ -1,0 +1,14 @@
+/* 모든 스타일은 css 충돌방지를 위해 .contact을 기준으로 작성 하시면 됩니다. 예) .contact .box {} */
+	.contact{}
+	.main_div { position: relative; }
+  
+	.typing	{ position: absolute; text-align: center; color: #fff; }
+	.typing .tp01 { font-size: 1.5em; font-weight: bold; }
+	/*
+	.typing:after {display:inline-block;vertical-align:middle;content:'';animation:blink infinite 1s ease;}
+
+	@keyframes blink {
+	  0%	{opacity:0;}
+	  100%	{opacity:1;}
+	}
+	*/

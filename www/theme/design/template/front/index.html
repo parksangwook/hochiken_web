@@ -1,0 +1,1051 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/front/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? $_GET['co_id'] : '';
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+
+?>
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Common CSS-->
+  <link rel="stylesheet" href="/css/style_front.css" />
+  <link rel="stylesheet" href="/css/style_mobile_front.css" />
+  <link rel="stylesheet" href="/css/flip_clock.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+  <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b2ebb20b168878d0591446fd359c946e&amp;libraries=services"></script> -->
+  <!--Font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" /> 
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="header"></div>
+<section class="main" id="top_move">
+  <div class="main_content rltv">
+    <div class="main_img_div">
+      <img class="main_img" src="/images/02_top_01.png">
+    </div>
+    <div class="main_text absol">
+      <p>Our Story</p>
+      <p>.</p>
+    </div>
+  </div>
+</section>
+<section class="con01">
+  <div class="con01_content">
+    <div class="con01_div rltv">
+      <div class="con01_div_01 absol">
+        <p>Who</p>
+        <div class="con01_div_01_row">
+          <p>We Are</p>
+          <p>.</p>
+        </div>
+        <p>좋을 ‘호(好)’의 마음으로,</p>
+        <p>더 좋은 치킨을 만듭니다.</p>
+      </div>
+      <div class="con01_div_02 absol">
+        <div class="con01_div_02_s">
+          <p>호치킨은 이름처럼 언제나 ‘좋음’을 생각합니다.</p>
+          <p>좋은 재료, 좋은 가격, 좋은 공간.</p>
+          <p>세 가지 모두를 지키기 위해, 한 가지도 허투루 지나치지 않습니다.</p>
+        </div>
+        <div class="con01_div_02_s">
+          <p>매일 깐깐하게 고른 신선한 재료로 정성껏 만든 치킨,</p>
+          <p>부담 없는 가격으로 온 가족이 함께 즐길 수 있는 행복,</p>
+          <p>그리고 편안하게 머물고 싶은 따뜻한 공간까지.</p>
+        </div>
+        <div class="con01_div_02_s">
+          <p>오늘도, 내일도, 매일 가고 싶은 우리 동네의 단골집,</p>
+          <p>호치킨은 언제나 ‘좋을 호(好)’의 마음으로 여러분 곁에 있겠습니다.</p>
+        </div>
+      </div>
+      <div class="con01_div_03 absol">
+        <img class="con01_02" src="/images/02_con01_02.png">
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+      <div class="con02_left">
+        <div class="con02_left_div">
+          <div class="con02_left_div_s">
+            <p>호치킨의</p>
+          </div>
+          <div class="con02_left_div_s">
+            <p>세 가지</p>
+            <p>약속.</p>
+          </div>
+        </div>
+      </div>
+      <div class="con02_right pc-mobile">
+        <div class="con02_right_div">
+          <div class="con02_right_div_s rltv">
+            <p>호치킨은 한 조각의 치킨에도 정성을 담습니다.</p>
+            <p>깐깐하게 고른 신선한 재료만을 사용해,</p>
+            <p>더 건강하고 믿을 수 있는 치킨을 만들기 위해 노력합니다.</p>
+            <div class="con02_text_absol absol">
+              <p>좋은 재료</p>
+              <div class="con02_text_img_div">
+                <img class="con02_text_img" src="/images/02_con02_02.png">
+              </div>
+            </div>
+            <div class="con02_img_div absol">
+              <img class="con02_img" src="/images/02_con02_03.png">
+            </div>
+          </div>
+          <div class="con02_right_div_s rltv">
+            <p>호치킨은 언제나 변함없는 합리적인 가격으로</p>
+            <p>온 가족이 함께 모여 마음 편히 즐길 수 있는</p>
+            <p>맛있고 든든한 치킨을 제공합니다.</p>
+            <div class="con02_text_absol absol">
+              <p>좋은 가격</p>
+              <div class="con02_text_img_div">
+                <img class="con02_text_img" src="/images/02_con02_02.png">
+              </div>
+            </div>
+            <div class="con02_img_div absol">
+              <img class="con02_img" src="/images/02_con02_04.png">
+            </div>
+          </div>
+          <div class="con02_right_div_s rltv">
+            <p>따뜻한 정이 느껴지는, 늘 편안한 공간.</p>
+            <p>매일 가고 싶고, 자연스럽게 발걸음이 향하는</p>
+            <p>우리 동네 단골집, 호치킨입니다.</p>
+            <div class="con02_text_absol absol">
+              <p>좋은 공간</p>
+              <div class="con02_text_img_div">
+                <img class="con02_text_img" src="/images/02_con02_02.png">
+              </div>
+            </div>
+            <div class="con02_img_div absol">
+              <img class="con02_img" src="/images/02_con02_05.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con02_swiper_div_m mobile-pc">
+        <div class="con02_swiper_m">
+          <div class="con02_swiper_wrapper_m swiper-wrapper">
+
+            <div class="con02_swiper_slide_m swiper-slide">
+              <div class='con02_sd_div_m'>
+                <div class="con02_right_div_s rltv">
+                  <p>호치킨은 한 조각의 치킨에도 정성을 담습니다.</p>
+                  <p>깐깐하게 고른 신선한 재료만을 사용해,</p>
+                  <p>더 건강하고 믿을 수 있는 치킨을 만들기 위해 노력합니다.</p>
+                  <div class="con02_text_absol absol">
+                    <p>좋은 재료</p>
+                    <div class="con02_text_img_div">
+                      <img class="con02_text_img" src="/images/02_con02_02.png">
+                    </div>
+                  </div>
+                  <div class="con02_img_div absol">
+                    <img class="con02_img" src="/images/02_con02_03.png">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="con02_swiper_slide_m swiper-slide">
+              <div class='con02_sd_div_m'>
+                <div class="con02_right_div_s rltv">
+                  <p>호치킨은 언제나 변함없는 합리적인 가격으로</p>
+                  <p>온 가족이 함께 모여 마음 편히 즐길 수 있는</p>
+                  <p>맛있고 든든한 치킨을 제공합니다.</p>
+                  <div class="con02_text_absol absol">
+                    <p>좋은 가격</p>
+                    <div class="con02_text_img_div">
+                      <img class="con02_text_img" src="/images/02_con02_02.png">
+                    </div>
+                  </div>
+                  <div class="con02_img_div absol">
+                    <img class="con02_img" src="/images/02_con02_04.png">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="con02_swiper_slide_m swiper-slide">
+              <div class='con02_sd_div_m'>
+                <div class="con02_right_div_s rltv">
+                  <p>따뜻한 정이 느껴지는, 늘 편안한 공간.</p>
+                  <p>매일 가고 싶고, 자연스럽게 발걸음이 향하는</p>
+                  <p>우리 동네 단골집, 호치킨입니다.</p>
+                  <div class="con02_text_absol absol">
+                    <p>좋은 공간</p>
+                    <div class="con02_text_img_div">
+                      <img class="con02_text_img" src="/images/02_con02_02.png">
+                    </div>
+                  </div>
+                  <div class="con02_img_div absol">
+                    <img class="con02_img" src="/images/02_con02_05.png">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con03">
+  <div class="con03_content">
+    <div class="con03_div rltv">
+      <div class="con03_01_div absol">
+        <img class="con03_01" src="/images/02_con03_01.png">
+      </div>
+      <div class="con03_02_div absol">
+        <img class="con03_02" src="/images/02_con03_02.png">
+      </div>
+      <div class="con03_random_box_absol absol">
+        <div class="con03_random_box_rltv rltv">
+          <div class="con03_img_div absol" id="con03_img_01">
+            <img class="con03_img" src="/images/02_con03_04.png">
+          </div>
+          <div class="con03_img_div absol" id="con03_img_02">
+            <img class="con03_img" src="/images/02_con03_05.png">
+          </div>
+          <div class="con03_img_div absol" id="con03_img_03">
+            <img class="con03_img" src="/images/02_con03_06.png">
+          </div>
+          <div class="con03_img_div absol" id="con03_img_04">
+            <img class="con03_img" src="/images/02_con03_07.png">
+          </div>
+          <div class="con03_img_div absol" id="con03_img_05">
+            <img class="con03_img" src="/images/02_con03_08.png">
+          </div>
+        </div>
+      </div>
+      <div class="con03_bg_img_div">
+        <img class="con03_bg_img" src="/images/02_con03_03.jpg">
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con04">
+  <div class="con04_content">
+    <div class="con04_div">
+      <div class="con04_left">
+        <div class="con04_left_div rltv">
+          <div class="con04_text_absol absol">
+            <div class="con04_text_row">
+              <div class="con04_01_div">
+                <img class="con04_01" src="/images/02_con04_01.png">
+              </div>
+            </div>
+            <div class="con04_text_row">
+              <p>맛을 넘어</p>
+            </div>
+            <div class="con04_text_row">
+              <p>진심을 담다</p>
+              <p>.</p>
+            </div>
+            <div class="con04_text_row">
+              <p>단순한 맛을 넘어,</p>
+              <p>진심이 전해지는 한 끼를 만듭니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con04_right rltv">
+        <div class="con04-button-prev absol">
+          <div class="con04_button_rltv rltv">
+            <img class="button_img" src="/images/button_img.png">
+            <img class="button_absol_img absol" src="/images/button_absol_img.png">
+          </div>
+        </div>
+        <div class="con04-button-next absol">
+          <div class="con04_button_rltv rltv">
+            <img class="button_img" src="/images/button_img.png">
+            <img class="button_absol_img absol" src="/images/button_absol_img.png">
+          </div>
+        </div>
+        <div class="con04_right_div">
+
+          <div class="con04_swiper">
+            <div class="con04_swiper_wrapper swiper-wrapper">
+
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_03.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>좋은 마음가짐으로</P>
+                    <P>기본을 지키는 치킨집</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>호치킨은 늘 정직한 자세로 좋은 재료를 고집하며,</P>
+                    <P>합리적인 가격으로 더 건강하고 맛있는 치킨을 전합니다.</P>
+                    <P>진심을 담은 한 조각, 오늘도 고객 여러분께 전하고자 합니다.</P>
+                  </div>
+                </div>
+              </div>
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_04.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>함께 나누는</P>
+                    <P>더 좋은 세상을 위해</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>눈앞의 이익보다 모두가 함께 웃을 수 있는 내일을 생각합니다.</P>
+                    <P>‘다 같이 잘 먹고 잘 사는 세상’을 꿈꾸며,</P>
+                    <P>앞장서서 책임을 다하는 착한 기업이 되겠습니다.</P>
+                  </div>
+                </div>
+              </div>
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_05.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>새로운 맛의 길 ,호치킨의 도전</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>호치킨은 늘 정직한 맛을 넘어,</P>
+                    <P>더 새로운 메뉴와 즐거운 경험을 위해 끊임없이 고민합니다.</P>
+                    <P>오늘보다 더 나은 내일을 향해 한 걸음씩 나아갑니다.</P>
+                  </div>
+                </div>
+              </div>
+
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_03.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>좋은 마음가짐으로</P>
+                    <P>기본을 지키는 치킨집</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>호치킨은 늘 정직한 자세로 좋은 재료를 고집하며,</P>
+                    <P>합리적인 가격으로 더 건강하고 맛있는 치킨을 전합니다.</P>
+                    <P>진심을 담은 한 조각, 오늘도 고객 여러분께 전하고자 합니다.</P>
+                  </div>
+                </div>
+              </div>
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_04.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>함께 나누는</P>
+                    <P>더 좋은 세상을 위해</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>눈앞의 이익보다 모두가 함께 웃을 수 있는 내일을 생각합니다.</P>
+                    <P>‘다 같이 잘 먹고 잘 사는 세상’을 꿈꾸며,</P>
+                    <P>앞장서서 책임을 다하는 착한 기업이 되겠습니다.</P>
+                  </div>
+                </div>
+              </div>
+              <div class="con04_swiper_slide swiper-slide">
+                <div class='con04_sd_div'>
+                  <div class='con04_sd_img_div'>
+                    <img class="con04_sd_img" src="/images/02_con04_05.png">
+                  </div>
+                  <div class='con04_sd_text_div_01'>
+                    <P>새로운 맛의 길 ,호치킨의 도전</P>
+                  </div>
+                  <div class='con04_sd_text_div_02'>
+                    <P>호치킨은 늘 정직한 맛을 넘어,</P>
+                    <P>더 새로운 메뉴와 즐거운 경험을 위해 끊임없이 고민합니다.</P>
+                    <P>오늘보다 더 나은 내일을 향해 한 걸음씩 나아갑니다.</P>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div> 
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con05">
+  <div class="con05_content">
+    <div class="con05_div">
+      <div class="con05_div_01">
+        <p>History</p>
+        <p>.</p>
+      </div>
+      <div class="con05_div_02 rltv">
+        <div class="con05_line absol"></div>
+        <div class="con05_left">
+          <div class="con05_left_div">
+
+            <div class="con05_swiper_left">
+              <div class="con05_swiper_wrapper_left swiper-wrapper">
+
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2007</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2007. 02</p>
+                        <p>호치킨 1호점 오픈</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2009</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2009. 12</p>
+                        <p>가맹사업 시작</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2013</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2013. 00</p>
+                        <p>가맹점 100호점 오픈</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2014</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2014. 04</p>
+                        <p>㈜다울에프앤비 설립</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2014. 04</p>
+                        <p>가맹점 150호점 오픈</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2017</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2017. 01</p>
+                        <p>한국소비자만족지수 1위 기업 수상</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2017. 12</p>
+                        <p>신메뉴 ‘치슐랭’ 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2018</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2018. 10</p>
+                        <p>한국소비자만족지수 1위 기업 2년 연속 수상</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2019</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2019. 08</p>
+                        <p>한국소비자만족지수 1위 기업 3년 연속 수상</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2019. 10</p>
+                        <p>신메뉴 ‘호차오’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2019. 12</p>
+                        <p>AJ토탈 주식회사 자회사로 편입</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2020</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2020. 03</p>
+                        <p>신메뉴 ‘치즈찐’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2020. 07</p>
+                        <p>가수 ‘이상민’ 광고 모델 발탁</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2020. 07</p>
+                        <p>신메뉴 ‘치밥찐(feat.으깨밥)’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2020. 10</p>
+                        <p>한국소비자만족지수 1위 기업 4년 연속 수상</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2020. 12</p>
+                        <p>신메뉴 ‘빠다갈릭치킨’ 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2021</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2021. 06</p>
+                        <p>신메뉴 ‘왕호라이드, 핫쏘이, 빠삭안심’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2021. 10</p>
+                        <p>신메뉴 ‘찰떡콩 치킨’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2021. 12</p>
+                        <p>신메뉴 ‘오리지널 윙봉, 치타 윙봉’ 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2022</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2022. 02</p>
+                        <p>직영점 ‘대전가장점’ 리뉴얼 오픈</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2022. 02</p>
+                        <p>신메뉴 ‘순살대잔치’ 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2022. 04</p>
+                        <p>신메뉴 ‘킹성비 세트’ 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2023</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2023. 03</p>
+                        <p>HBAF 콜라보 신제품 출시(허니버터맛,와사비맛)</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2023. 06</p>
+                        <p>2023 한국 소비자만족지수 7년 연속 1위 선정</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2023. 11</p>
+                        <p>신메뉴 '빠삭 콘치즈 치킨' 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2024</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2024. 03</p>
+                        <p>신메뉴 '청양마요 노가리 치킨' 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2024. 06</p>
+                        <p>신메뉴 '크런치 새우 치킨' 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2024. 07</p>
+                        <p>2024 한국 소비자만족지수 8년 연속 1위 선정</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2024. 10</p>
+                        <p>신메뉴 '메가순살' 출시</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_left swiper-slide">
+                  <div class='con05_sd_div_left rltv'>
+                    <div class="con05_one_left">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_left">
+                      <p>2025</p>
+                    </div>
+                    <div class="con05_text_left absol">
+                      <div class="con05_text_left_s">
+                        <p>2025. 06</p>
+                        <p>신메뉴 '페퍼스넥' 출시</p>
+                      </div>
+                      <div class="con05_text_left_s">
+                        <p>2025. 07</p>
+                        <p>2025 한국 소비자만족지수 9년 연속 1위 선정</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="con05_right pc-mobile">
+          <div class="con05_right_div">
+
+            <div class="con05_swiper_right">
+              <div class="con05_swiper_wrapper_right swiper-wrapper">
+
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2009</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2013</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2014</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2017</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2018</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2019</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2020</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2021</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2022</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2023</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2024</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2025</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con05_swiper_slide_right swiper-slide">
+                  <div class='con05_sd_div_right'>
+                    <div class="con05_one_right">
+                      <p>.</p>
+                    </div>
+                    <div class="con05_yyyy_right">
+                      <p>2007</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--
+<section class="video_section">
+  <div class="video_content">
+    <div class="video_rltv rltv">
+      <iframe class="iframe_video absol"
+        src="https://youtu.be/drxrh8BjhTM?autoplay=1&mute=1&loop=1&playlist=_ip6A58wpv0&controls=0&modestbranding=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+-->
+<section class="con06">
+  <div class="con06_content">
+    <div class="con06_div">
+      <div class="con06_div_01">
+        <p>Brand Identity</p>
+        <p>.</p>
+      </div>  
+      <div class="con06_div_02">
+        <div class="con06_left_01">
+          <div class="con06_left_01_div">
+            <p>Logo</p>
+          </div>
+        </div> 
+        <div class="con06_right_01">
+          <div class="con06_right_01_div">
+            <p>호치킨의 로고는 닭과 왕관을 모티브로, 고객 한 분 한 분을 왕처럼 소중히 대하겠다는 마음을 담고 있습니다.</p>
+            <p>좋은 재료로 정성껏 만든 치킨을 따뜻한 마음으로 담아내는 호치킨의 진심이 고스란히 녹아 있는 상징입니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="con06_div_03">
+        <div class="con06_img_div">
+          <img class="con06_img" src="/images/02_con06_02.png">
+        </div>
+        <div class="con06_img_div">
+          <img class="con06_img" src="/images/02_con06_03.png">
+        </div>
+      </div>
+      <div class="con06_div_04 pc-mobile">
+        <div class="con06_left_02">
+          <div class="con06_left_02_div rltv">
+            <div class="con06_img_div2">
+              <img class="con06_img2" src="/images/02_con06_04.png">
+            </div>
+            <div class="con06_text_absol absol">
+              <p>고객을 향한 서비스 정신</p>
+              <p>닭과 왕관을 형상화한 로고에는 고객을 ‘왕’처럼 소중히 여기며</p>
+              <p>최고의 서비스를 전하고자 하는 마음이 담겨 있습니다.</p>
+            </div>
+          </div>
+        </div>
+        <div class="con06_right_02">
+          <div class="con06_right_02_div rltv">
+            <div class="con06_img_div2">
+              <img class="con06_img2" src="/images/02_con06_05.png">
+            </div>
+            <div class="con06_text_absol absol">
+              <p>고객을 향한 진심</p>
+              <p>좋은 재료로 정성껏 만든 치킨을</p>
+              <p>따뜻한 마음으로 정갈하게 담는 호치킨의 진심을 표현했습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="con06_div_04_m mobile-pc">
+        <div class="con06_swiper_m">
+          <div class="con06_swiper_wrapper_m swiper-wrapper">
+
+            <div class="con06_swiper_slide_m swiper-slide">
+              <div class='con06_sd_div_m'>
+                <div class="con06_img_div2">
+                  <img class="con06_img2" src="/images/02_con06_04.png">
+                </div>
+                <div class="con06_text_absol">
+                  <p>고객을 향한 서비스 정신</p>
+                  <p>닭과 왕관을 형상화한 로고에는 고객을 ‘왕’처럼 소중히 여기며</p>
+                  <p>최고의 서비스를 전하고자 하는 마음이 담겨 있습니다.</p>
+                </div>
+              </div>
+            </div>
+            <div class="con06_swiper_slide_m swiper-slide">
+              <div class='con06_sd_div_m'>
+                <div class="con06_img_div2">
+                  <img class="con06_img2" src="/images/02_con06_05.png">
+                </div>
+                <div class="con06_text_absol">
+                  <p>고객을 향한 진심</p>
+                  <p>좋은 재료로 정성껏 만든 치킨을</p>
+                  <p>따뜻한 마음으로 정갈하게 담는 호치킨의 진심을 표현했습니다.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div> 
+      </div>
+      <div class="con06_div_05">
+        <div class="con06_div_05_01">
+          <p>Brand Color</p>
+        </div>
+        <div class="con06_div_05_02">
+          <div class="con06_left_03">
+            <div class="con06_left_03_div rltv">
+              <p>HO CHIKEN GREEN</p>
+              <p>#Ob45e</p>
+            </div>
+          </div>
+          <div class="con06_right_03">
+            <div class="con06_right_03_div rltv">
+              <p>WHITE</p>
+              <p>#FFFFFF</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="con06_scr rltv">
+    <img class="sd" src="/images/02_con06_07.png">
+    <img class="sd sd_next absol" src="/images/02_con06_07.png">
+  </div>
+</section>
+<!-- 
+<div class="main_01_div">
+  <img class="main_01" src="/images/main_01.png">
+</div>
+
+<div class="con03_scr rltv">
+  <img class="sd" src="/images/con01_12.png">
+  <img class="sd sd_next absol" src="/images/con01_12.png">
+</div>
+
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+
+    </div>
+  </div>
+</section>
+
+<div class="main_video_div absol">
+  <div class="main_video_rltv rltv">
+    <iframe class="main_video absol" src="https://www.youtube.com/embed/YrDai3SbErc?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=YrDai3SbErc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<div class="con01_swiper">
+  <div class="con01_swiper_wrapper swiper-wrapper">
+
+    <div class="con01_swiper_slide swiper-slide">
+      <div class='con01_sd_div'>
+
+      </div>
+    </div>
+
+  </div>
+</div> 
+
+-->
+<div id="footer"></div>
+</body>
+<script src="https://unpkg.com/split-type"></script>
+<!--gsap JS Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<!--Swiper JS Library-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!--jquery cdn-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- <script src="/js/map.js"></script> -->
+ <script src="/js/width_calculator.js"></script>
+<script src="/js/gsap_front.js"></script>
+<script src="/js/script_front.js"></script>
+</html>
+
+
+
+
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/front/script.js" ></script>
+  

@@ -1,0 +1,377 @@
+@media screen and (max-width:599px) {
+    .pc-mobile{
+        display: none !important;
+    }
+    .mobile-pc{
+        display: flex !important;
+    }
+    #modalImage {
+        width: 96%;
+        margin: -4% 0% 0% 0%;
+    }
+
+    .main_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 15% 0% 0% 0%;
+    }
+    .main_img_div {
+        width: 210% !important;
+    }
+    .main_text {
+        font-size: 9vw;
+        top: unset;
+    }
+    .border_button_div {
+        width: 70%;
+        height: 8vw;
+    }
+
+    .border_button_div {
+        background-color: #f1f1f1;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 8vw;
+        border-radius: 25vw;
+        padding-right: 5%;
+    }
+    .border_button_s {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: "Pretendard";
+        font-weight: 700;
+        font-size: 3.2vw;
+        color: #000;
+        width: 25%;
+        height: 100%;
+        cursor: pointer;
+        pointer-events: all;
+    }
+    .border_search {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 63%;
+    }
+    .border_search input {
+        appearance: none;
+        outline: none;
+        width: 90%;
+        height: 7.5vw;
+        padding-left: 5%;
+        font-family: 'Pretendard';
+        font-size: 3.2vw;
+        background-color: #fff;
+        color: #000;
+        border-radius: 50vw;
+        border: 1px solid #0000002e;
+    }
+    .border_icon {
+        width: 10% !important;
+    }
+    .border_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 14% 0% 0% 0%;
+    }
+    .border_list_total {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 7vw;
+        font-family: "Pretendard";
+        font-weight: 500;
+        font-size: 3.2vw;
+        padding-left: 6%;
+    }
+    .border_list_01_div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .border_list_01_title {
+        height: 10vw;
+        font-size: 3.2vw;
+    }
+    .border_img_div {
+        width: 30.7895% !important;
+    }
+    .border_list_01_content {
+        height: 9vw;
+        font-size: 3.2vw;
+    }
+    .border_list_01_content_03{
+        justify-content: flex-start;
+        width: 45%;
+    }
+    .border_list_01_content_03 > p{
+        width: 88%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .border_list_01_content_04 > p{
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .border_list_01_title_03 {
+        width: 45%;
+    }
+    .border_list_01_title_04 {
+        width: 16%;
+    }
+    .border_list_01_content_04 {
+        width: 16%;
+    }
+    .border_search_div{
+        margin: 5% 0% 6% 0%;
+    }
+    .pagination_01 button {
+        width: 6vw;
+        height: 6vw;
+        font-size: 3.2vw;
+    }
+
+    .border_button_02 {
+        margin: 5% 0% 7% 0%;
+    }
+    .border_button_02_s {
+        font-size: 3.2vw;
+        width: 25%;
+        height: 6.5vw;
+    }
+    .border_02_rltv {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+    }
+    .border_02_list_div {
+        width: 43%;
+        margin: 0% 1% 3% 1%;
+    }
+    .border_02_list_img_div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 44vw;
+    }
+    .border_02_list_text_div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        width: 99%;
+        height: 25vw;
+        font-family: "Pretendard";
+        font-weight: 500;
+        font-size: 2.9vw;
+        color: #0000007d;
+        border: 1px solid #0000003d;
+        border-radius: 5px;
+        margin: -3% 0% 0% 0%;
+    }
+    .border_02_list_text_div > p:nth-of-type(1) {
+        font-weight: 700;
+        font-size: 3.2vw;
+        color: #000;
+        margin: 0% 0% 4% 8%;
+    }
+    .pagination_02_01 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_02_02 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+    .pagination_02_03 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+
+    .border_05_rltv {
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        width: 95%;
+        margin: 7% 0% 0% 0%;
+    }
+    .border_05_list_div {
+        width: 48%;
+        margin: 0% 1% 3% 1%;
+    }
+    .border_05_list_vedio_div {
+        height: 29vw;
+        border-radius: 10px;
+    }
+    .border_05_list_text_div {
+        height: 10vw;
+        border-radius: 10px;
+    }
+    .border_05_list_text_div > p {
+        font-size: 3vw;
+    }
+    .border_veido {
+        width: 160%;
+        height: 31vw;
+    }
+    .pagination_05 button {
+        width: 6vw;
+        height: 6vw;
+        margin: 0% 1.1% 0% 1.1%;
+        font-size: 3.2vw;
+    }
+
+    .form_title_01 {
+        font-size: 5.5vw;
+        margin: 6% 0% 4% 0%;
+    }
+    .form {
+        width: 95%;
+    }
+    .form_left {
+        font-size: 3.1vw;
+        text-align: center;
+    }
+    .form_div {
+        height: 10vw;
+    }
+    .form_input_01 {
+        height: 6.5vw;
+        font-size: 3.2vw;
+    }
+    .form_button {
+        width: 23%;
+        height: 8vw;
+        font-size: 3.1vw;
+    }
+    .form_button2 {
+        width: 23%;
+        height: 8vw;
+        font-size: 3.1vw;
+    }
+    .form_index_div {
+        height: 40.5vw;
+    }
+    .form_agree_div {
+        height: 37vw;
+    }
+    .form_input_03 {
+        height: 36vw;
+        font-size: 3.2vw;
+    }
+    .agree_div {
+        height: 28vw;
+    }
+    .agree_button_div > p {
+        font-size: 2.8vw;
+    }
+    .agree_checkbox {
+        width: 3.5%;
+        height: 2.4vw;
+    }
+    .agree_checkbox2 {
+        width: 3.5%;
+        height: 2.4vw;
+    }
+    .agree_content {
+        height: 27vw;
+    }
+    .agree_margin {
+        font-size: 2.8vw;
+        margin: 3% 0% 3% 2%;
+    }
+    .form_button_div {
+        margin: 4.5% 0% 0% 0%;
+    }
+    .form_input_02 {
+        width: 22.6%;
+        height: 6.5vw;
+        font-size: 3.2vw;
+    }
+    .form_input_02_text {
+        font-size: 7.5vw;
+    }
+
+    /* 
+    background: url("/images/con3_bg.jpg") no-repeat center / cover; 
+    object-fit: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    flex-wrap: wrap;
+
+    font-family: 'LOTTERIACHAB';
+
+    font-family: "Pretendard";
+    font-weight: 400;
+    font-size: 1vw;
+    color: #000;
+
+    . p:nth-of-type(1)
+
+    .con08_swiper{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+    }
+    .con08_swiper_slide{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .con08_sd_img{
+        width: 100%;
+    }
+    .con08_swiper_slide.swiper-slide-next > div {
+
+    }
+*/
+}

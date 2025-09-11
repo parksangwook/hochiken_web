@@ -1,0 +1,100 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/header/style.css'>", 0);
+?>
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- <link rel="stylesheet" href="/font/style.css" /> -->
+<link rel="stylesheet" href="/css/header.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+
+<body>
+    <header class="header">
+        <div class="header_logo">
+            <a class="header_logo_href" href="/">
+                <img class="header_logo_1" src="/images/h_logo_01.png">
+            </a>
+        </div>
+        <div class="header_menu absol">
+            <a class="header_menu_1" href="/bbs/content.php?co_id=front">회사소개
+                <div class="header_menu_btm absol"></div>
+            </a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=menu">메뉴
+                <div class="header_menu_btm absol"></div>
+            </a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=map">매장찾기
+                <div class="header_menu_btm absol"></div>
+            </a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=community">커뮤니티
+                <div class="header_menu_btm absol"></div>
+            </a>
+            <a class="header_menu_2" href="/bbs/content.php?co_id=contact">창업문의
+                <div class="header_menu_btm absol"></div>
+            </a>
+        </div>
+
+        <div class="hamburger mobile-pc">
+            <div class="hamburger-menu">
+                <div id="line-top" class="line top-reverse init"></div>
+                <div id="line-mid" class="line mid-reverse init" style="background-color: #000;"></div>
+                <div id="line-bot" class="line bot-reverse init"></div>
+            </div>
+        </div>
+        <div class="header_menu absol mobile-pc">
+            <a class="header_menu_1" href="/bbs/content.php?co_id=front">회사소개</a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=menu">메뉴</a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=map">매장찾기</a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=community">커뮤니티</a>
+            <a class="header_menu_1" href="/bbs/content.php?co_id=contact">창업문의</a>
+        </div>
+
+        <?php if ($is_admin == 'super' || $is_auth || defined('G5_IS_ADMIN') || $member['mb_id'] == 'admin02') {  ?> 
+        <ul class="admin_head absol">
+           <li><a class="item">관리자메뉴<i class="fa fa-chevron-down"></i></a>
+               <span class="accent"></span>
+               <ul class="drop-down">
+                   <li><a class='header-menu' href="/bbs/board.php?bo_table=table_slide">슬라이드 게시판</a></li>
+                   <li><a class='header-menu' href="/bbs/board.php?bo_table=table_border">소식 게시판</a></li>
+                    <li><a class='header-menu' href="/bbs/board.php?bo_table=table_event">이벤트 게시판</a></li>
+                    <li><a class='header-menu' href="/bbs/board.php?bo_table=table_chicken">치킨 게시판</a></li>
+                    <li><a class='header-menu' href="/bbs/board.php?bo_table=table_menu">메뉴 게시판</a></li>
+                    <li><a class='header-menu' href="/bbs/board.php?bo_table=table_media">미디어 게시판</a></li>
+                   <li><a class='header-menu' href="/bbs/board.php?bo_table=table_sales">매출 게시판</a></li>
+                    <li><a class='header-menu' href="/bbs/board.php?bo_table=table_map">매장 게시판</a></li>
+               </ul>
+           </li>
+       </ul>  
+       <?php }  ?>
+
+    </header>
+    <div class="tothetop">
+        <div class="tothetop_div rltv" onclick="window.location.href='https://hochicken.co.kr/#form_move'">
+            <img class="tt_img" src="/images/nav_01.png">
+        </div>
+        <div class="tothetop_div rltv" onclick="location.href ='tel:1644-5727'">
+            <img class="tt_img" src="/images/nav_02.png">
+            <div class="tt_call_div absol">
+                <p>1644</p>
+                <p>-</p>
+                <p>5727</p>
+            </div>
+        </div>
+        <div class="tothetop_div rltv" onclick="location.href ='#top_move'">
+            <img class="tt_img" src="/images/nav_03.png">
+        </div>
+    </div> 
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<script src="/js/script_header.js"></script>
+
+</html>
+  
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/header/script.js" ></script>
+  

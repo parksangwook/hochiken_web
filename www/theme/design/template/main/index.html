@@ -1,0 +1,1238 @@
+<?php
+add_stylesheet("<link rel='stylesheet' href='".G5_THEME_URL."/template/main/style.css'>", 0);
+
+// 현재 co_id GET 파라미터 값 받기
+$current_co_id = isset($_GET['co_id']) ? trim($_GET['co_id']) : 'main';
+if ($current_co_id === '') {
+    $current_co_id = 'main';
+}
+
+// DB에서 팝업 노출 대상 페이지(nw_pages) 가져오기
+$sql = "SELECT nw_pages FROM {$g5['new_win_table']}
+        WHERE '".G5_TIME_YMDHIS."' BETWEEN nw_begin_time AND nw_end_time
+          AND nw_device IN ('both', 'pc')";
+
+$result = sql_query($sql);
+$show_popup = false;
+
+while ($row = sql_fetch_array($result)) {
+    $nw_pages = trim($row['nw_pages']);
+
+    // ① nw_pages가 'all'이면 모든 페이지에서 노출
+    if ($nw_pages === 'all') {
+        $show_popup = true;
+        break;
+    }
+
+
+    // ② 특정 페이지 목록일 경우
+    $pages = array_map('trim', explode(',', $nw_pages));
+    if (in_array($current_co_id, $pages)) {
+        $show_popup = true;
+        break;
+    }
+}
+
+// 조건에 맞으면 팝업 파일 include
+if ($show_popup) {
+    include_once(G5_BBS_PATH.'/newwin.inc.php');
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_slide where ca_name='pc'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$slide_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_slide where ca_name='pc' order by wr_1*1 desc";
+$table_slide ='table_slide';
+$board['bo_table'] ='g5_write_table_slide';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $slide_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $slide_list[$i]['is_notice'] = false;
+    $slide_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_slide where ca_name='mobile'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$slide_list2 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_slide where ca_name='mobile' order by wr_1*1 desc";
+$table_slide ='table_slide';
+$board['bo_table'] ='g5_write_table_slide';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $slide_list2[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $slide_list2[$i]['is_notice'] = false;
+    $slide_list2[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_media";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$media_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_media order by wr_1*1 desc";
+$table_media ='table_media';
+$board['bo_table'] ='g5_write_table_media';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $media_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $media_list[$i]['is_notice'] = false;
+    $media_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_chicken";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$chicken_list = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_chicken order by wr_1*1 desc";
+$table_chicken ='table_chicken';
+$board['bo_table'] ='g5_write_table_chicken';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $chicken_list[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $chicken_list[$i]['is_notice'] = false;
+    $chicken_list[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='피자'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='피자' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_01[$i]['is_notice'] = false;
+    $menu_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='사이드'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_02 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='사이드' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_02[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_02[$i]['is_notice'] = false;
+    $menu_list_02[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_menu where ca_name='안주류'";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$menu_list_03 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_menu where ca_name='안주류' order by wr_1*1 desc";
+$menu_table ='table_menu';
+$board['bo_table'] ='g5_write_table_menu';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $menu_list_03[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $menu_list_03[$i]['is_notice'] = false;
+    $menu_list_03[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_border";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$border_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_border order by wr_1*1 desc";
+$border_table ='table_border';
+$board['bo_table'] ='g5_write_table_border';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $border_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $border_list_01[$i]['is_notice'] = false;
+    $border_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+$sql = " SELECT COUNT(DISTINCT `wr_parent`) AS `cnt` FROM g5_write_table_event";
+$row = sql_fetch($sql);
+$total_count = $row['cnt'];
+$event_list_01 = array();
+$i = 0;
+$sql = " SELECT * FROM g5_write_table_event order by wr_1*1 desc";
+$event_table ='table_event';
+$board['bo_table'] ='g5_write_table_event';
+$result = sql_query($sql);
+$k = 0;
+while ($row = sql_fetch_array($result))
+{
+
+    $event_list_01[$i] = get_list($row, $board, $board_skin_url, G5_IS_MOBILE ? $board['bo_mobile_subject_len'] : $board['bo_subject_len']);
+    $event_list_01[$i]['is_notice'] = false;
+    $event_list_01[$i]['num'] = $list_num - $k;
+
+    $i++;
+    $k++;
+}
+
+
+
+?>
+
+<!--
+include_once(G5_LIB_PATH.'/newwin.lib.php'); // newwin() 함수 포함
+
+$co_id = isset($_GET['co_id']) ? trim($_GET['co_id']) : 'main';
+
+// DB에서 노출 대상 팝업만 가져오기
+$sql = " SELECT * 
+           FROM {$g5['new_win_table']}
+          WHERE nw_begin_time <= '".G5_TIME_YMDHIS."'
+            AND nw_end_time   >= '".G5_TIME_YMDHIS."'
+            AND (nw_device = 'both' OR nw_device = '".sql_real_escape_string($nw_device)."')
+          ORDER BY nw_order DESC, nw_id DESC ";
+$result = sql_query($sql);
+
+while($row = sql_fetch_array($result)) {
+
+    // nw_pages 체크: 비어있으면 전체, 있으면 현재 co_id가 포함되어야 노출
+    if (!empty($row['nw_pages'])) {
+        $pages = array_map('trim', explode(',', strtolower($row['nw_pages'])));
+        if (!in_array(strtolower($co_id), $pages)) continue;
+    }
+
+    echo get_new_win_content($row); // 팝업 HTML 출력
+}
+-->
+
+<!-- 내용시작 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Common CSS-->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/style_mobile.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.css" />
+  <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b2ebb20b168878d0591446fd359c946e&amp;libraries=services"></script> -->
+  <!--Font-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet" /> 
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="header"></div>
+<section class="main" id="top_move">
+  <div class="main_content rltv">
+    <div class="main_pagination_div absol pc-mobile">
+      <div class="main_pagination swiper-pagination_main"></div>
+    </div>
+    <div class="main_pagination_div_m absol mobile-pc">
+      <div class="main_pagination_m swiper-pagination_main_m"></div>
+    </div>
+    <div class="main_div rltv">
+      <div class="main_absol absol">
+        <div class="main_02_div">
+          <img class="main_02" src="/images/main_02.png">
+        </div>
+        <div class="main_line"></div>
+      </div>
+
+      <div class="main_swiper pc-mobile">
+        <div class="main_swiper_wrapper swiper-wrapper">
+
+            <?php for ($i=0; $i<count($slide_list); $i++) {
+            $file2 = get_file($table_slide, $slide_list[$i]['wr_id']);
+            if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+            $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+            }else{
+              $file_src2 = '/images/con1_1_3.jpeg';
+            }?>
+            <div class="main_swiper_slide swiper-slide">
+                <div class='main_sd_div'>
+                  <img class="main_sd_img" src=<?php echo $file_src2; ?> style="width: 100%;">
+                </div>
+              </div>
+            <?php } ?>
+
+        </div>
+      </div> 
+
+      <div class="main_swiper_m mobile-pc">
+        <div class="main_swiper_wrapper_m swiper-wrapper">
+
+            <?php for ($i=0; $i<count($slide_list2); $i++) {
+            $file2 = get_file($table_slide, $slide_list2[$i]['wr_id']);
+            if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+            $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+            }else{
+              $file_src2 = '/images/con1_1_3.jpeg';
+            }?>
+            <div class="main_swiper_slide_m swiper-slide">
+                <div class='main_sd_div_m'>
+                  <img class="main_sd_img_m" src=<?php echo $file_src2; ?> style="width: 100%;">
+                </div>
+              </div>
+            <?php } ?>
+
+        </div>
+      </div> 
+
+    </div>
+  </div>
+</section>
+<section class="con01">
+  <div class="con01_content">
+    <div class="con01_div">
+      <div class="con01_div_01">
+        <div class="con01_01_div">
+          <img class="con01_01" src="/images/01_con01_01.png">
+        </div>
+        <p>직접 들려주는</p>
+        <p>창업 이야기.</p>
+      </div>
+      <div class="con01_div_02">
+        <div class="con01_div_02_left">
+          <div class="con01_div_02_left_div">
+            <p>호치킨 창업을 고민하는 당신을 위한</p>
+            <p>점주님들의 현실적이고 솔직한 이야기</p>
+            <div class="con01_02_div">
+              <img class="con01_02" src="/images/01_con01_02.png">
+            </div>
+          </div>
+        </div>
+        <div class="con01_div_02_right">
+          <div class="con01_div_02_right_div rltv">
+              
+            <p class="con01_video_tite absol"><?php echo $media_list[0]['wr_subject']; ?></p>
+            <div class="con01_video_rltv rltv">
+              <iframe class="con01_video absol"
+                src="https://www.youtube.com/embed/<?php echo $media_list[0]['wr_2']; ?>?autoplay=1&loop=1&playlist=<?php echo $media_list[0]['wr_2']; ?>&controls=0&modestbranding=1&rel=0"
+                title="YouTube video player"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+            </div>
+              
+          </div>
+        </div>
+      </div>
+      <div class="con01_div_03 rltv">
+        <div class="con01-button-prev absol">
+          <div class="con01_button_rltv rltv">
+            <img class="con01_btn_img" src="/images/01_con01_07.png">
+            <img class="con01_btn_absol_img absol" src="/images/01_con01_06.png">
+          </div>
+        </div>
+        <div class="con01-button-next absol">
+          <div class="con01_button_rltv rltv">
+            <img class="con01_btn_img" src="/images/01_con01_07.png">
+            <img class="con01_btn_absol_img absol" src="/images/01_con01_06.png">
+          </div>
+        </div>
+        <div class="con01_swiper">
+          <div class="con01_swiper_wrapper swiper-wrapper">
+
+            <?php for ($i=0; $i<count($media_list); $i++) {
+                $file2 = get_file($table_media, $media_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $media_list[$i]['wr_2']; 
+                ?>
+                <div class="con01_swiper_slide swiper-slide">
+                    <div class='con01_sd_div rltv' data-youtube="<?php echo $youtube_url; ?>" data-title="<?php echo $media_list[$i]['wr_subject']; ?>">
+                        <img class="con01_sd_img" src="<?php echo $file_src2; ?>" style="width: 100%;">
+                        <div class="con01_bg_absol absol"></div>
+                        <p class="con01_sd_text absol"><?php echo $media_list[$i]['wr_subject'] ?></p>
+                        <div class="con01_sd_absol absol">
+                            <div class="con01_sd_rltv rltv">
+                                <div class='con01_04_div absol'>
+                                    <img class="con01_04" src="/images/01_con01_04.png">
+                                </div>
+                                <div class='con01_05_div'>
+                                    <img class="con01_05" src="/images/01_con01_05.png">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+              
+            
+<!--
+            <div class="con01_swiper_slide swiper-slide">
+              <div class='con01_sd_div rltv'>
+                <img class="con01_sd_img" src="/images/01_con01_03.png">
+                <div class="con01_bg_absol absol"></div>
+                <p class="con01_sd_text absol">은퇴 후 1 억 매출</p>
+                <div class="con01_sd_absol absol">
+                  <div class="con01_sd_rltv rltv">
+                    <div class='con01_04_div absol'>
+                      <img class="con01_04" src="/images/01_con01_04.png">
+                    </div>
+                    <div class='con01_05_div'>
+                      <img class="con01_05" src="/images/01_con01_05.png">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+-->
+
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</section>
+<section class="menu_section" id="menu_move">
+  <div class="menu_content">
+    <div class="menu_div">
+      <div class="menu_div_01">
+        <p>Menu</p>
+        <p>.</p>
+      </div>
+      <div class="menu_button_div">
+        <div class="menu_button_s" data-value="step_01">
+          <p>치킨</p>
+        </div>
+        <div class="menu_button_s" data-value="step_02">
+          <p>피자</p>
+        </div>
+        <div class="menu_button_s" data-value="step_03">
+          <p>안주류</p>
+        </div>
+        <div class="menu_button_s" data-value="step_04">
+          <p>사이드</p>
+        </div>
+      </div>
+      <div class="menu_border rltv">
+<!--
+        <div class="menu-button-prev absol">
+          <img class="menu_button_img" src="/images/con11_03.png">
+        </div>
+        <div class="menu-button-next absol">
+          <img class="menu_button_img" src="/images/con11_03.png">
+        </div>
+-->
+
+        <div class="menu_border_div rltv">
+
+          <div class="menu_swiper_absol absol" id="menu_swiper_01">
+            <div class="menu_swiper">
+              <div class="menu_swiper_wrapper swiper-wrapper">
+
+                <?php for ($i=0; $i<count($chicken_list); $i++) {
+                    $file2 = get_file($table_chicken, $chicken_list[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="menu_swiper_slide swiper-slide">
+                  <div class="menu_sd_div rltv">
+                    <div class="menu_type absol">
+                      <?php if($chicken_list[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($chicken_list[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $chicken_list[$i]['wr_subject'] ?></p>
+                        <p><?php echo $chicken_list[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_img_div rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img"  src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_text_div">
+                      <p><?php echo $chicken_list[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+
+                
+<!--
+                <div class="menu_swiper_slide swiper-slide">
+                  <div class="menu_sd_div rltv">
+                    <div class="menu_type absol">
+                      <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <img class="menu_new_img" src="/images/01_con02_04.png">
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p>페퍼스넥</p>
+                        <p>1% 특수부위 닭목살을 매콤한 통후추와 함께 바삭하게 튀겨낸, 맥주와 환상 궁합인 메뉴</p>
+                        <img class="menu_absol_img" src="/images/01_con02_05.png">
+                      </div>
+                    </div>
+                    <div class="menu_sd_img_div rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img" src="/images/01_con02_05.png">
+                      </div>
+                    </div>
+                    <div class="menu_sd_text_div">
+                      <p>치슐랭</p>
+                    </div>
+                  </div>
+                </div>
+-->
+
+              </div>
+            </div>
+          </div>
+
+          <div class="menu_swiper_absol absol" id="menu_swiper_02">
+            <div class="menu_swiper">
+              <div class="menu_swiper_wrapper swiper-wrapper">
+
+                <?php for ($i=0; $i<count($menu_list_01); $i++) {
+                    $file2 = get_file($menu_table, $menu_list_01[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="menu_swiper_slide swiper-slide">
+                  <div class="menu_sd_div rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_01[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_01[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_01[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_01[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_img_div rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img"  src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_text_div">
+                      <p><?php echo $menu_list_01[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="menu_swiper_absol absol" id="menu_swiper_03">
+            <div class="menu_swiper">
+              <div class="menu_swiper_wrapper swiper-wrapper">
+
+                <?php for ($i=0; $i<count($menu_list_03); $i++) {
+                    $file2 = get_file($menu_table, $menu_list_03[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="menu_swiper_slide swiper-slide">
+                  <div class="menu_sd_div rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_03[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_03[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_03[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_03[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_img_div rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img"  src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_text_div">
+                      <p><?php echo $menu_list_03[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="menu_swiper_absol absol" id="menu_swiper_04">
+            <div class="menu_swiper">
+              <div class="menu_swiper_wrapper swiper-wrapper">
+
+                <?php for ($i=0; $i<count($menu_list_02); $i++) {
+                    $file2 = get_file($menu_table, $menu_list_02[$i]['wr_id']);
+                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                        $file_src2 = ''.$file2[0]['path'].'/'.$file2[0]['file'].'';
+                    }
+                ?>
+                <div class="menu_swiper_slide swiper-slide">
+                  <div class="menu_sd_div rltv">
+                    <div class="menu_type absol">
+                      <?php if($menu_list_02[$i]['wr_3'] === "O") { ?>
+                        <img class="menu_best_img" src="/images/01_con02_03.png">
+                      <?php } ?>
+                      <?php if($menu_list_02[$i]['wr_4'] === "O") { ?>
+                        <img class="menu_new_img" src="/images/01_con02_04.png">
+                      <?php } ?>
+                    </div>
+                    <div class="menu_absol absol">
+                      <div class="menu_rltv rltv">
+                        <p><?php echo $menu_list_02[$i]['wr_subject'] ?></p>
+                        <p><?php echo $menu_list_02[$i]['wr_2'] ?></p>
+                        <img class="menu_absol_img" src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_img_div rltv">
+                      <div class="menu_img_div absol">
+                        <img class="menu_img"  src="<?php echo $file_src2; ?>">
+                      </div>
+                    </div>
+                    <div class="menu_sd_text_div">
+                      <p><?php echo $menu_list_02[$i]['wr_subject'] ?></p>
+                    </div>
+                  </div>
+                </div>
+                <?php } ?>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="menu_view_more_div">
+        <div class="menu_view_more" onclick="window.location.href='bbs/content.php?co_id=menu/#menu_move'">
+          <p>view more</p>
+          <p></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="con03">
+  <div class="con03_content">
+    <div class="con03_div">
+      <div class="con03_div_01">
+        <p>호치킨 브랜드 이야기</p>
+      </div>
+      <div class="con03_div_02">
+        <p>Brand Story</p>
+        <p>.</p>
+      </div>
+      <div class="con03_div_03">
+        <p>좋은 재료로 만든 호치킨, 매일 찾고 싶은 공간과 합리적인 가격을 약속합니다!</p>
+      </div>
+      <div class="con03_div_04">
+        <div class="con03_div_04_side rltv pc-mobile">
+          <div class="con03_swiper_absol absol">
+            <div class="con03_swiper_left rltv">
+              <div class="con03_swiper_wrapper swiper-wrapper">
+
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <div class="con03_text_one absol"></div>
+                    <img class="con03_sd_img" src="/images/01_con03_02.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_left_text absol">
+                      <p>Good</p>
+                      <p>좋은 재료만 고집해 더 바삭하고 건강한 한 입</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_04.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_left_text absol">
+                      <p>Menu</p>
+                      <p>오븐과 후라이드 조합으로 다양한 메뉴</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        <div class="con03_div_04_center rltv">
+          <div class="con03_09_div absol">
+            <img class="con03_09" src="/images/01_con03_09.png">
+          </div>
+          <div class="con03_10_div absol">
+            <img class="con03_10" src="/images/01_con03_10.png">
+          </div>
+          <div class="con03_11_div absol">
+            <img class="con03_11" src="/images/01_con03_11.png">
+          </div>
+        </div>
+        <div class="con03_div_04_side rltv pc-mobile">
+          <div class="con03_swiper_absol absol">
+            <div class="con03_swiper_right rltv">
+              <div class="con03_swiper_wrapper swiper-wrapper">
+
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_03.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_right_text absol">
+                      <p>Price</p>
+                      <p>합리한 가격, 온 가족이 편하게 즐기는 맛의 행복</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_05.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_right_text absol">
+                      <p>Place</p>
+                      <p>뜻하고 정겨운, 매일 가고 싶은 우리 동네 단골집</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+        <div class="con03_div_04_side rltv mobile-pc">
+          <div class="con03_swiper_absol absol">
+            <div class="con03_swiper_right rltv">
+              <div class="con03_swiper_wrapper swiper-wrapper">
+
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_03.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_right_text absol">
+                      <p>Price</p>
+                      <p>합리한 가격, 온 가족이 편하게 즐기는 맛의 행복</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_05.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_right_text absol">
+                      <p>Place</p>
+                      <p>뜻하고 정겨운, 매일 가고 싶은 우리 동네 단골집</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <div class="con03_text_one absol"></div>
+                    <img class="con03_sd_img" src="/images/01_con03_02.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_left_text absol">
+                      <p>Good</p>
+                      <p>좋은 재료만 고집해 더 바삭하고 건강한 한 입</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="con03_swiper_slide swiper-slide">
+                  <div class='con03_sd_div rltv'>
+                    <img class="con03_sd_img" src="/images/01_con03_04.png">
+                    <img class="con03_sd_bg_img absol" src="/images/01_con03_06.png">
+                    <div class="con03_left_text absol">
+                      <p>Menu</p>
+                      <p>오븐과 후라이드 조합으로 다양한 메뉴</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> 
+          </div>
+        </div>
+      </div>
+      <div class="con03_div_05 rltv">
+        <div class="con03-button-next_left rltv pc-mobile">
+          <img class="con03_button_img" src="/images/button_img.png">
+          <img class="con03_button_absol_img absol" src="/images/button_absol_img.png">
+        </div>
+        <div class="con03-button-next_right rltv mobile-pc">
+          <img class="con03_button_img" src="/images/button_img.png">
+          <img class="con03_button_absol_img absol" src="/images/button_absol_img.png">
+        </div>
+        <p>우리동네, 치맥맛집</p>
+        <div class="con03-button-prev_right rltv">
+          <img class="con03_button_img" src="/images/button_img.png">
+          <img class="con03_button_absol_img absol" src="/images/button_absol_img.png">
+        </div>
+        <div class="con03_line absol"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con04">
+  <div class="con04_content">
+    <div class="con04_div">
+      <div class="con04_div_01 rltv">
+        <div class="con04_text absol">
+          <p>모두가 좋아할 수밖에 없는 호치킨</p>
+          <p>하나하나 신중히 고른 재료로 정성을 더했습니다.</p>
+          <p>오늘도, 내일도 부담 없이 찾고 싶은 공간이 되겠습니다.</p>
+        </div>
+        <div class="con04_scr_absol_01 absol">
+          <div class="con04_scr rltv">
+            <img class="sd2" src="/images/01_con04_01.png">
+            <img class="sd2 sd_next2 absol" src="/images/01_con04_01.png">
+          </div>
+        </div>
+        <div class="con04_scr_absol_02 absol">
+          <div class="con04_scr rltv">
+            <img class="sd" src="/images/01_con04_02.png">
+            <img class="sd sd_next absol" src="/images/01_con04_02.png">
+          </div>
+        </div>
+        <div class="con04_bg_rltv rltv">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con05">
+  <div class="con05_content">
+    <div class="con05_div rltv">
+      <div class="con05-button-next absol">
+        <img class="con05_button_img" src="/images/01_con05_02.png">
+      </div>
+      <div class="con05_text absol">
+        <p>호치킨미디어</p>
+        <p>Media</p>
+        <div class="con05_text_row">
+          <p>Report</p>
+          <p>.</p>
+        </div>
+      </div>
+      <div class="con05_div_01">
+        <div class="con05_swiper">
+          <div class="con05_swiper_wrapper swiper-wrapper">
+
+            <?php for ($i=0; $i<count($media_list); $i++) {
+                $file2 = get_file($table_media, $media_list[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $media_list[$i]['wr_2']; 
+            ?>
+                <div class="con05_swiper_slide swiper-slide">
+                  <div class='con05_sd_div rltv'>
+                    <iframe class="con05_video absol"
+                      src="https://www.youtube.com/embed/<?php echo $youtube_url; ?>?autoplay=1&mute=1&loop=1&playlist=<?php echo $youtube_url; ?>&controls=0&modestbranding=1&rel=0"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="autoplay; encrypted-media"
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+                </div>
+            <?php } ?>
+
+
+<!--
+            <div class="con05_swiper_slide swiper-slide">
+              <div class='con05_sd_div rltv'>
+                <iframe class="con05_video absol"
+                  src="https://www.youtube.com/embed/_ip6A58wpv0?autoplay=1&mute=1&loop=1&playlist=_ip6A58wpv0&controls=0&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+-->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con06">
+  <div class="con06_content">
+    <div class="con06_div">
+      <div class="con06_left">
+        <div class="con06_left_div">
+          <div class="con06_title rltv">
+            <p>Notice.</p>
+            <div class="con06_view_more_absol absol">
+              <div class="con06_view_more_rltv rltv" onclick="window.location.href='bbs/content.php?co_id=community/#community_move'">
+                <div class="con06_02_div">
+                  <img class="con06_02" src="/images/01_con06_02.png">
+                </div>
+                <p></p>
+              </div>
+            </div>
+          </div>
+          <div class="con06_line"></div>
+          <div class="con06_context">
+
+            <?php 
+            $max_count = min(3, count($border_list_01)); // 최대 3개만
+            for ($i=0; $i<$max_count; $i++) {
+                $file2 = get_file($table_border, $border_list_01[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $border_list_01[$i]['wr_2']; 
+                $subject = $border_list_01[$i]['wr_subject'];
+                $write_date = $border_list_01[$i]['wr_datetime'];
+                $date_str = date("Y. m. d", strtotime($write_date)); 
+
+                $is_new = (strtotime($write_date) >= strtotime("-7 days"));
+                $wr_link = "/bbs/board.php?bo_table=table_border&wr_id=" . $border_list_01[$i]['wr_id'];
+            ?>
+            <div class="con06_context_s rltv" onclick="window.location.href='<?php echo $wr_link; ?>'" style="cursor:pointer;">
+              <?php if($is_new) { ?>
+              <div class="con06_04_div">
+                <img class="con06_04" src="/images/01_con06_04.png">
+              </div>
+              <?php } ?>
+
+              <p><?php echo $subject; ?></p>
+              <p class="con06_yyyy_dd_ss absol"><?php echo $date_str; ?></p>
+            </div>
+            <?php } ?>
+
+
+
+<!--
+            <div class="con06_context_s rltv">
+              <p>네이버 메인에 게시된 호치킨 치타윙봉!</p>
+              <p class="con06_yyyy_dd_ss absol">2022. 03 .17</p>
+            </div>
+-->
+              
+          </div>
+        </div>
+      </div>
+      <div class="con06_right">
+        <div class="con06_right_div">
+          <div class="con06_title rltv">
+            <p>Event.</p>
+            <div class="con06_view_more_absol absol">
+              <div class="con06_view_more_rltv rltv" onclick="window.location.href='https://hochicken.co.kr/bbs/content.php?co_id=community&step=step_02#community_move'">
+                <div class="con06_02_div">
+                  <img class="con06_02" src="/images/01_con06_02.png">
+                </div>
+                <p></p>
+              </div>
+            </div>
+          </div>
+          <div class="con06_line"></div>
+          <div class="con06_context">
+              
+            <?php 
+            $max_count = min(3, count($event_list_01)); // 최대 3개만
+            for ($i=0; $i<$max_count; $i++) {
+                $file2 = get_file($table_event, $event_list_01[$i]['wr_id']);
+                if(preg_match("/\.({$config['cf_image_extension']})$/i", $file2[0]['file'])) {
+                    $file_src2 = $file2[0]['path'].'/'.$file2[0]['file'];
+                } else {
+                    $file_src2 = '/images/con1_1_3.jpeg';
+                }
+
+                $youtube_url = $event_list_01[$i]['wr_2']; 
+                $subject = $event_list_01[$i]['wr_subject'];
+                $write_date = $event_list_01[$i]['wr_datetime']; // 작성일 컬럼 (확인 필요)
+                $date_str = date("Y. m. d", strtotime($write_date)); 
+
+                // 작성 후 7일 이내인지 체크
+                $is_new = (strtotime($write_date) >= strtotime("-7 days"));
+                $wr_link = "/bbs/board.php?bo_table=table_event&wr_id=" . $event_list_01[$i]['wr_id'];
+            ?>
+            <div class="con06_context_s rltv" onclick="window.location.href='<?php echo $wr_link; ?>'" style="cursor:pointer;">
+              <?php if($is_new) { ?>
+              <div class="con06_04_div">
+                <img class="con06_04" src="/images/01_con06_04.png">
+              </div>
+              <?php } ?>
+
+              <p><?php echo $subject; ?></p>
+              <p class="con06_yyyy_dd_ss absol"><?php echo $date_str; ?></p>
+            </div>
+            <?php } ?>
+              
+
+<!--
+            <div class="con06_context_s rltv">
+              <p>[인스타그램]치뱅세트의 효과 맞추기</p>
+              <p class="con06_yyyy_dd_ss absol">2022. 03. 17</p>
+            </div>
+-->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="con07">
+  <div class="con07_content">
+    <div class="con07_div">
+      <div class="con07_div_top rltv">
+        <div class="con07_04_div absol">
+          <img class="con07_04" src="/images/01_con07_04.png">
+        </div>
+        <div class="con07_div_01">
+          <p>Search Store</p>
+          <p>.</p>
+        </div>
+        <div class="con07_div_02">
+          <p>지금 바로 가까운 호치킨 매장을 검색하고 방문해보세요!</p>
+        </div>
+        <div class="con07_div_03">
+          <input class="con07_search" type="text" placeholder="검색어를 입력해주세요.">
+          <div class="con07_02_div">
+            <img class="con07_02" src="/images/01_con07_02.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="form_section" id="form_move">
+  <div class="form_content">
+    <div class="form_div rltv">
+      <div class="form_scr_absol absol">
+        <div class="form_scr rltv">
+          <img class="sd" src="/images/01_con08_04.png">
+          <img class="sd sd_next absol" src="/images/01_con08_04.png">
+        </div>
+      </div>
+      <div class="form_left">
+        <div class="form_left_div">
+          <div class="form_left_div_s">
+            <p>호치킨 창업문의</p>
+          </div>
+          <div class="form_left_div_s">
+            <p>Franchise</p>
+          </div>
+          <div class="form_left_div_s">
+            <p>Inquiry</p>
+            <p>.</p>
+          </div>
+          <div class="form_left_div_s">
+            <p>지금 바로 창업문의하고, 성공의 첫걸음을 시작하세요!</p>
+          </div>
+          <div class="form_left_div_s">
+            <div class="con08_03_div">
+              <img class="con08_03" src="/images/01_con08_03.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form_right">
+        <div class="form_right_div">
+          <div class="formWrap_div rltv">
+            <div class="formWrap">
+              <form class="form" name="formmail" method="post">
+                <div class="form_div_01">
+                  <div class="form_img_div">
+                    <img class="form_img" src="/images/01_con08_02.png">
+                  </div>
+                  <p>이름</p>
+                  <input id="name" name="name" class="form_input_01 xss_check" type="text">
+                </div>
+                <div class="form_div_01">
+                  <div class="form_img_div">
+                    <img class="form_img" src="/images/01_con08_02.png">
+                  </div>
+                  <p>연락처</p>
+                  <input id="tel1" name="tel1" class="form_input_01 xss_check" type="text">
+                </div>
+                <div class="form_div_01">
+                  <div class="form_img_div">
+                    <img class="form_img" src="/images/01_con08_02.png">
+                  </div>
+                  <p>희망지역</p>
+                  <input id="area" name="area" class="form_input_01 xss_check" type="text">
+                </div>
+                <div class="form_div_02">
+                  <div class="form_img_div">
+                    <img class="form_img" src="/images/01_con08_02.png">
+                  </div>
+                  <p>유입경로</p>
+                  <select id="budget" name="budget" class="form_input_02">
+                    <option value="">유입경로를 선택해주세요.</option>
+                    <option value="검색">검색</option>
+                    <option value="당근광고">당근광고</option>
+                    <option value="네이버 키워드 광고">네이버 키워드 광고</option>
+                    <option value="지인 소개">지인 소개</option>
+                    <option value="기타">기타</option>
+                  </select>
+                </div>
+                <div class="form_div_03">
+                  <div class="form_img_div">
+                    <img class="form_img" src="/images/01_con08_02.png">
+                  </div>
+                  <p>문의내용</p>
+                  <textarea class="form_input_03" id="form_index" name="form_index" rows="4" placeholder="문의 내용을 입력하세요"></textarea>
+                </div>
+                  <div class="form_button_div">
+                    <div class="form_button">
+                      <p>등록하기</p>
+                    </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 
+<div class="main_01_div">
+  <img class="main_01" src="/images/main_01.png">
+</div>
+
+<div class="con03_scr rltv">
+  <img class="sd" src="/images/con01_12.png">
+  <img class="sd sd_next absol" src="/images/con01_12.png">
+</div>
+
+<section class="con02">
+  <div class="con02_content">
+    <div class="con02_div">
+
+    </div>
+  </div>
+</section>
+
+<div class="main_video_div absol">
+  <div class="main_video_rltv rltv">
+    <iframe class="main_video absol" src="https://www.youtube.com/embed/YrDai3SbErc?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=YrDai3SbErc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<div class="con01_swiper">
+  <div class="con01_swiper_wrapper swiper-wrapper">
+
+    <div class="con01_swiper_slide swiper-slide">
+      <div class='con01_sd_div'>
+
+      </div>
+    </div>
+
+  </div>
+</div> 
+
+-->
+<div id="footer"></div>
+</body>
+<script src="https://unpkg.com/split-type"></script>
+<!--gsap JS Library-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
+<!--Swiper JS Library-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!--jquery cdn-->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+ <script src="/js/width_calculator.js"></script>
+<script src="/js/gsap.js"></script>
+<script src="/js/script.js"></script>
+</html>
+
+
+
+
+<!-- 내용끝 -->
+
+<script src="<?=G5_THEME_URL?>/template/main/script.js" ></script>
+  
