@@ -184,8 +184,12 @@ call_user_func_array(array($stmt, 'bind_result'), $params);
             // ✨ [수정] $result 대신 $stmt 객체를 사용하도록 변경
             if ($stmt->num_rows > 0) {
                 while($stmt->fetch()) {
-                    // ✨ --- 메뉴 수량 계산 로직 --- ✨
-                    // ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+                    // ✨ --- 메뉴 수량 계산 로직 (수정됨) --- ✨
+                    
+                    // 1. 2칸을 차지하는 메뉴(size: 2) 목록 정의
+                    $size_2_menus = array('스푼떡볶이', '누들로제떡볶이', '매콤비빔쫄면', '라구스파게티');
+
+                    // 2. DB에서 모든 메뉴를 가져옴
                     $all_menus = array();
                     for ($i = 1; $i <= 6; $i++) {
                         if (!empty($row['menu_' . $i])) {
@@ -193,21 +197,33 @@ call_user_func_array(array($stmt, 'bind_result'), $params);
                         }
                     }
 
-                    // ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
                     $final_menu_list = array();
                     if (!empty($all_menus)) {
+                        // 3. 각 메뉴의 개수를 셈
                         $menu_counts = array_count_values($all_menus);
                         
                         foreach ($menu_counts as $menu_name => $count) {
-                            $times_to_add = floor($count / 2) + ($count % 2);
+                            $times_to_add = 0;
                             
+                            // 4. 메뉴가 size:2 목록에 있는지 확인하여 분기 처리
+                            if (in_array($menu_name, $size_2_menus)) {
+                                // size:2 메뉴는 2개가 1개로 처리됨 (중복 제거 로직)
+                                $times_to_add = floor($count / 2) + ($count % 2);
+                            } else {
+                                // size:1 메뉴는 개수 그대로 표시
+                                $times_to_add = $count;
+                            }
+                            
+                            // 5. 최종 목록에 메뉴 이름 추가
                             for ($j = 0; $j < $times_to_add; $j++) {
                                 $final_menu_list[] = $menu_name;
                             }
                         }
                     }
-                    
+
+                    // 6. 쉼표로 구분된 문자열로 변환
                     $menu_str = implode(', ', $final_menu_list);
+                    
                     // ✨ --- 로직 끝 --- ✨
 
                     echo "<tr>";

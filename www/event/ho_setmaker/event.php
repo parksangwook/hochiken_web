@@ -113,7 +113,7 @@
     <form id="event-form" class="w-full h-full flex flex-col">
 
       <div class="relative h-[13%] flex-shrink-0">
-        <img src="./images/05_title.png" alt="제출하기 타이틀" class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-35%] w-[85%]" />
+        <img src="./images/05_title.png" alt="제출하기 타이틀" class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-35%] w-full" />
       </div>
 
       <div class="relative h-[62%] w-[90%] mx-auto min-h-0 flex-shrink-0 py-2">
@@ -153,11 +153,16 @@
       </div>
       
       <div class="relative h-[25%] flex-shrink-0">
-        <button type="submit" class="absolute top-[3%] left-1/2 w-full -translate-x-1/2 transition-transform active:scale-95">
+        <button type="submit" class="absolute top-[0%] left-1/2 w-full -translate-x-1/2 transition-transform active:scale-95">
           <img src="./images/05_bt.png" alt="이벤트 참여하기" />
         </button>
-        <button id="share-btn" type="button" class="absolute top-[45%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
-          <img src="./images/05_share_link.png" alt="링크 복사하기" />
+        
+        <button id="copy-btn" type="button" class="absolute top-[36%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
+          <img src="./images/05_copy_link.png" alt="링크 복사하기" />
+        </button>
+        
+        <button id="share-btn" type="button" class="absolute top-[65%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
+          <img src="./images/05_share_link.png" alt="링크 공유하기" />
         </button>
       </div>
 
@@ -172,7 +177,7 @@
   </div>
 </div>
 
-
+<img src="./images/session7.png" alt="유의사항" class="w-full align-top" />
 
 
   <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999]">
@@ -550,20 +555,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (!form.user_name.value.trim()) { showMessage('성함을 입력해주세요.'); form.user_name.focus(); return; }
-      if (!form.user_contact.value.trim()) { showMessage('연락처를 입력해주세요.'); form.user_contact.focus(); return; }
       
-      const contactValue = form.user_contact.value;
-      if (!/^[0-9]+$/.test(contactValue)) {
-          showMessage('연락처는 숫자만 입력해주세요.');
+      // =======================================================
+      // ✨ 여기를 수정했습니다! ✨
+      // =======================================================
+      if (!form.user_contact.value.trim()) { showMessage('연락처를 입력해주세요.'); form.user_contact.focus(); return; }
+
+      // 연락처 유효성 검사: 숫자 11자리인지 확인
+      const contactRegex = /^\d{11}$/; // \d는 숫자를 의미, {11}은 11자리를 의미
+      if (!contactRegex.test(form.user_contact.value)) {
+          showMessage('연락처는 11자리 숫자로<br>정확하게 입력해주세요.');
           form.user_contact.focus();
           return;
       }
+      // =======================================================
 
       if (!form.set_name.value.trim()) { showMessage('내가 만든 세트 이름을 입력해주세요.'); form.set_name.focus(); return; }
       
-      // =======================================================
-      // ✨ 개인정보 동의 여부 확인 로직 추가 ✨
-      // =======================================================
       const privacyCheckbox = document.getElementById('agree_privacy');
       if (!privacyCheckbox.checked) {
           showMessage('개인정보 제공 내용에<br>동의해주셔야 합니다.');
@@ -654,11 +662,32 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
   
+  // =======================================================
+  // ✨ 링크 복사 및 공유 기능 (리팩토링) ✨
+  // =======================================================
+  const copyBtn = document.getElementById('copy-btn');
   const shareBtn = document.getElementById('share-btn');
-  if(shareBtn) {
+
+  // 두 버튼 중 하나라도 존재하면 URL 설정
+  if (copyBtn || shareBtn) {
     const eventUrl = "<?php require_once 'config.php'; echo $config['event_url']; ?>";
+
+    // 클립보드에 텍스트를 복사하는 함수 (최신/레거시 방식 모두 지원)
+    const copyToClipboard = (text) => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showMessage('이벤트 링크를 복사했습니다!');
+        }).catch(err => {
+          console.warn('Clipboard API failed, falling back.', err);
+          legacyCopy(text); // 실패 시 구형 방식 사용
+        });
+      } else {
+        legacyCopy(text); // 클립보드 API 미지원 시 구형 방식 사용
+      }
+    };
     
-    function legacyCopy(text) {
+    // 구형 브라우저를 위한 복사 함수
+    const legacyCopy = (text) => {
       const textArea = document.createElement('textarea');
       textArea.value = text;
       textArea.style.position = 'fixed';
@@ -673,30 +702,36 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage('링크 복사에 실패했습니다.<br>다시 시도해주세요.');
       }
       document.body.removeChild(textArea);
+    };
+
+    // "링크 복사하기" 버튼 이벤트 리스너
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        copyToClipboard(eventUrl);
+      });
     }
 
-    shareBtn.addEventListener('click', () => {
-      if (navigator.share) {
-        navigator.share({
-          title: '호치킨 세트메이커 이벤트',
-          text: '내가 만드는 메뉴 꿀 조합! 총 천만원 상금 획득의 기회!',
-          url: eventUrl,
-        }).catch((error) => {
-          if (error.name !== 'AbortError') console.error('Share failed:', error);
-        });
-      } 
-      else if (navigator.clipboard) {
-        navigator.clipboard.writeText(eventUrl).then(() => {
-          showMessage('이벤트 링크를 복사했습니다!');
-        }).catch(err => {
-          console.warn('Clipboard API failed, falling back to legacy.', err);
-          legacyCopy(eventUrl); 
-        });
-      } 
-      else {
-        legacyCopy(eventUrl);
-      }
-    });
+    // "링크 공유하기" 버튼 이벤트 리스너
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        // navigator.share API (모바일 등) 지원 시 공유 기능 우선 사용
+        if (navigator.share) {
+          navigator.share({
+            title: '호치킨 세트메이커 이벤트',
+            text: '내가 만드는 메뉴 꿀 조합! 총 천만원 상금 획득의 기회!',
+            url: eventUrl,
+          }).catch((error) => {
+            // 사용자가 공유를 취소한 경우는 에러로 보지 않음
+            if (error.name !== 'AbortError') {
+              console.error('Share failed:', error);
+            }
+          });
+        } else {
+          // 공유 기능 미지원 시, 복사 기능으로 대체
+          copyToClipboard(eventUrl);
+        }
+      });
+    }
   }
 
   // 페이지 초기화 함수 호출
