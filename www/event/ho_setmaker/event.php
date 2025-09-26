@@ -33,17 +33,53 @@
     .highlight-piece-bottom-center{top:74.5%;left:50%;transform:translate(-50%,-50.5%) scale(.96)}
     .highlight-piece-bottom-left{top:74.5%;left:25.3%;transform:translate(-50%,-50.5%) rotate(180deg) scale(.96)}
     .dragging-ghost{position:fixed;pointer-events:none;z-index:9999;opacity:.75;transform:translate(-50%,-50%)}
-    /* 메뉴 섹션 */
     #menu-gallery{background-image:url('./images/menu_bg.png');background-size:100% 100%;background-repeat:no-repeat;background-position:center}
     .menu-tab{cursor:pointer;background-size:100% 100%;background-repeat:no-repeat;background-position:center}
     #chicken-tab:not(.active){background-image:url('./images/03_menu_tap_chic_off.png')}
     #chicken-tab.active{background-image:url('./images/03_menu_tap_chic_on.png')}
     #side-tab:not(.active){background-image:url('./images/03_menu_tap_side_off.png')}
     #side-tab.active{background-image:url('./images/03_menu_tap_side_on.png')}
-    /* 제출 폼 정렬 개선 */
+	.formwrap 
     .form-wrap label{letter-spacing:-.2px}
     .input-like{height:44px}
     @media (min-width:640px){.input-like{height:48px}}
+
+/* ✨✨✨ [수정] 메뉴 이름표(label) 스타일 ✨✨✨ */
+.menu-label, .menu-label-pair {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: white; /* 글자색은 흰색 */
+  font-weight: 700;
+  font-size: clamp(12px, 2.5vw, 16px);
+  white-space: nowrap;
+
+  /* ✨ 핵심: 텍스트 외곽선(아웃라인) 스타일 */
+  -webkit-text-stroke: 1.5px black; /* 1.5px 두께의 검은색 테두리 */
+  paint-order: stroke fill; /* 테두리가 글자를 덮지 않도록 순서 지정 */
+}
+
+    /* 개별 삼각형 이름표 위치 */
+    .label-top-left { top: 33%; left: 25%; transform: translate(-50%, -50%); }
+    .label-top-center { top: 20%; left: 50%; transform: translate(-50%, -50%); }
+    .label-top-right { top: 33%; left: 75%; transform: translate(-50%, -50%); }
+    .label-bottom-left { top: 67%; left: 25%; transform: translate(-50%, -50%); }
+    .label-bottom-center { top: 80%; left: 50%; transform: translate(-50%, -50%); }
+    .label-bottom-right { top: 67%; left: 75%; transform: translate(-50%, -50%); }
+
+    /* 개별 마름모 이름표 위치 */
+    .label-diamond-0-1 { top: 25%; left: 37.5%; transform: translate(-50%, -50%); }
+    .label-diamond-1-2 { top: 25%; left: 62.5%; transform: translate(-50%, -50%); }
+    .label-diamond-2-3 { top: 50%; left: 75%; transform: translate(-50%, -50%); }
+    .label-diamond-3-4 { top: 75%; left: 62.5%; transform: translate(-50%, -50%); }
+    .label-diamond-4-5 { top: 75%; left: 37.5%; transform: translate(-50%, -50%); }
+    .label-diamond-0-5 { top: 50%; left: 25%; transform: translate(-50%, -50%); }
+    /* ✨✨✨ [추가] 여기까지 ✨✨✨ */
   </style>
 </head>
 <body class="bg-[#0e390c] flex justify-center">
@@ -63,6 +99,7 @@
       <div class="absolute top-[49%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[77%]">
         <div class="image-container" id="drop-container">
           <img src="./images/box_white.png" alt="box_white" class="center-image w-full" />
+          
           <img src="./images/box_piece.png" alt="box_piece" class="box-piece box-piece-top-left" data-slot="0" />
           <img src="./images/box_piece.png" alt="box_piece" class="box-piece box-piece-top-center" data-slot="1" />
           <img src="./images/box_piece.png" alt="box_piece" class="box-piece box-piece-top-right" data-slot="2" />
@@ -77,6 +114,19 @@
           <img src="" alt="diamond_piece" class="diamond-piece diamond-4-5" data-pair="4-5" />
           <img src="" alt="diamond_piece" class="diamond-piece diamond-0-5" data-pair="0-5" />
 
+          <div id="label-0" class="menu-label label-top-left"></div>
+          <div id="label-1" class="menu-label label-top-center"></div>
+          <div id="label-2" class="menu-label label-top-right"></div>
+          <div id="label-3" class="menu-label label-bottom-right"></div>
+          <div id="label-4" class="menu-label label-bottom-center"></div>
+          <div id="label-5" class="menu-label label-bottom-left"></div>
+
+          <div id="label-pair-0-1" class="menu-label-pair label-diamond-0-1"></div>
+          <div id="label-pair-1-2" class="menu-label-pair label-diamond-1-2"></div>
+          <div id="label-pair-2-3" class="menu-label-pair label-diamond-2-3"></div>
+          <div id="label-pair-3-4" class="menu-label-pair label-diamond-3-4"></div>
+          <div id="label-pair-4-5" class="menu-label-pair label-diamond-4-5"></div>
+          <div id="label-pair-0-5" class="menu-label-pair label-diamond-0-5"></div>
           <img id="highlight-0" src="./images/box_piece_y.png" alt="highlight" class="highlight-piece highlight-piece-top-left" />
           <img id="highlight-1" src="./images/box_piece_y.png" alt="highlight" class="highlight-piece highlight-piece-top-center" />
           <img id="highlight-2" src="./images/box_piece_y.png" alt="highlight" class="highlight-piece highlight-piece-top-right" />
@@ -106,17 +156,17 @@
 
     <img src="./images/session5.png" alt="이벤트 경품" class="w-full align-top" />
 
- <div id="submission-section" class="relative">
+ <div id="submission-section" class="relative ">
   <img src="./images/session6.png" alt="제출하기" class="w-full align-top" />
 
-  <div class="absolute top-0 left-0 w-full h-full">
-    <form id="event-form" class="w-full h-full flex flex-col">
+  <div class="absolute top-0 left-0 w-full h-full formwrap ">
+    <form id="event-form" class="w-full h-full flex flex-col ">
 
-      <div class="relative h-[13%] flex-shrink-0">
+      <div class="relative h-[13%] ">
         <img src="./images/05_title.png" alt="제출하기 타이틀" class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-35%] w-full" />
       </div>
 
-      <div class="relative h-[62%] w-[90%] mx-auto min-h-0 flex-shrink-0 py-2">
+      <div class="relative h-[62%] w-[90%] mx-auto min-h-0  py-2 ">
         <div class="h-full flex flex-col gap-y-2">
           
           <div class="grid grid-cols-5 gap-x-4 sm:gap-x-6">
@@ -152,16 +202,16 @@
         </div>
       </div>
       
-      <div class="relative h-[25%] flex-shrink-0">
+      <div class="relative h-[25%]  ">
         <button type="submit" class="absolute top-[0%] left-1/2 w-full -translate-x-1/2 transition-transform active:scale-95">
           <img src="./images/05_bt.png" alt="이벤트 참여하기" />
         </button>
         
-        <button id="copy-btn" type="button" class="absolute top-[36%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
+        <button id="copy-btn" type="button" class="absolute  top-[38%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
           <img src="./images/05_copy_link.png" alt="링크 복사하기" />
         </button>
         
-        <button id="share-btn" type="button" class="absolute top-[65%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
+        <button id="share-btn" type="button" class="absolute  top-[65%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
           <img src="./images/05_share_link.png" alt="링크 공유하기" />
         </button>
       </div>
@@ -177,7 +227,7 @@
   </div>
 </div>
 
-<img src="./images/session7.png" alt="유의사항" class="w-full align-top" />
+<img src="./images/session7.png" alt="유의사항" class="w-full align-top " />
 
 
   <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999]">
@@ -237,9 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         };
 
-  // =======================================================
-  // ✨ 개인정보 약관 파일 로드 기능 추가 ✨
-  // =======================================================
   function loadPrivacyPolicy() {
     const policyContainer = document.getElementById('privacy-policy-content');
     if (policyContainer) {
@@ -287,6 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let pendingDropAction = null;
 
   function executePlacement(menuName, originalSrc, size, targetSlots) {
+    // 2칸짜리 메뉴 배치
     if (size === '2' && targetSlots && targetSlots.length === 2) {
       clearSlot(targetSlots[0]);
       clearSlot(targetSlots[1]);
@@ -303,7 +351,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       slotContents[targetSlots[0]] = { name: menuName, pair: diamondPairKey };
       slotContents[targetSlots[1]] = { name: menuName, pair: diamondPairKey };
+  
+      // ✨✨✨ [수정] 2칸짜리 메뉴 이름표 표시 ✨✨✨
+      const diamondLabel = document.getElementById(`label-pair-${diamondPairKey}`);
+      if(diamondLabel) {
+        diamondLabel.textContent = menuName;
+        diamondLabel.style.visibility = 'visible';
+      }
     }
+    // 1칸짜리 메뉴 배치
     else if (size === '1' && targetSlots && targetSlots.length === 1) {
       const slot = targetSlots[0];
       if (slot === null) return;
@@ -312,6 +368,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const newSrc = originalSrc.replace('.png', '_p.png').replace('.jpg', '_p.jpg');
       actualTargetPiece.src = newSrc;
       slotContents[slot] = { name: menuName };
+  
+      // ✨✨✨ [수정] 1칸짜리 메뉴 이름표 표시 ✨✨✨
+      const singleLabel = document.getElementById(`label-${slot}`);
+      if(singleLabel) {
+        singleLabel.textContent = menuName;
+        singleLabel.style.visibility = 'visible';
+      }
     }
     updateHighlights(null);
   }
@@ -352,7 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearSlot(slot){
       const content=slotContents[slot];
       if(!content) return;
-      if(content.pair){
+
+      if(content.pair){ // 2칸짜리 메뉴 제거
         const pairKey=content.pair;
         const diamondPiece=document.querySelector(`[data-pair="${pairKey}"]`);
         if(diamondPiece){diamondPiece.style.visibility='hidden';diamondPiece.src=''}
@@ -363,10 +427,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if(piece2){piece2.src='./images/box_piece.png';piece2.style.visibility='visible'}
         delete slotContents[slot1];
         delete slotContents[slot2];
-      }else{
+    
+        // ✨✨✨ [수정] 2칸짜리 메뉴 이름표 숨기기 ✨✨✨
+        const diamondLabel = document.getElementById(`label-pair-${pairKey}`);
+        if(diamondLabel) {
+          diamondLabel.textContent = '';
+          diamondLabel.style.visibility = 'hidden';
+        }
+      }else{ // 1칸짜리 메뉴 제거
         const piece=document.querySelector(`[data-slot="${slot}"]`);
         if(piece){piece.src='./images/box_piece.png'}
         delete slotContents[slot];
+    
+        // ✨✨✨ [수정] 1칸짜리 메뉴 이름표 숨기기 ✨✨✨
+        const singleLabel = document.getElementById(`label-${slot}`);
+        if(singleLabel) {
+          singleLabel.textContent = '';
+          singleLabel.style.visibility = 'hidden';
+        }
       }
     }
     function handleDragMove(clientX,clientY){
@@ -556,19 +634,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!form.user_name.value.trim()) { showMessage('성함을 입력해주세요.'); form.user_name.focus(); return; }
       
-      // =======================================================
-      // ✨ 여기를 수정했습니다! ✨
-      // =======================================================
       if (!form.user_contact.value.trim()) { showMessage('연락처를 입력해주세요.'); form.user_contact.focus(); return; }
 
-      // 연락처 유효성 검사: 숫자 11자리인지 확인
-      const contactRegex = /^\d{11}$/; // \d는 숫자를 의미, {11}은 11자리를 의미
+      const contactRegex = /^\d{11}$/;
       if (!contactRegex.test(form.user_contact.value)) {
           showMessage('연락처는 11자리 숫자로<br>정확하게 입력해주세요.');
           form.user_contact.focus();
           return;
       }
-      // =======================================================
 
       if (!form.set_name.value.trim()) { showMessage('내가 만든 세트 이름을 입력해주세요.'); form.set_name.focus(); return; }
       
@@ -662,31 +735,25 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
   
-  // =======================================================
-  // ✨ 링크 복사 및 공유 기능 (리팩토링) ✨
-  // =======================================================
   const copyBtn = document.getElementById('copy-btn');
   const shareBtn = document.getElementById('share-btn');
 
-  // 두 버튼 중 하나라도 존재하면 URL 설정
   if (copyBtn || shareBtn) {
     const eventUrl = "<?php require_once 'config.php'; echo $config['event_url']; ?>";
 
-    // 클립보드에 텍스트를 복사하는 함수 (최신/레거시 방식 모두 지원)
     const copyToClipboard = (text) => {
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
           showMessage('이벤트 링크를 복사했습니다!');
         }).catch(err => {
           console.warn('Clipboard API failed, falling back.', err);
-          legacyCopy(text); // 실패 시 구형 방식 사용
+          legacyCopy(text);
         });
       } else {
-        legacyCopy(text); // 클립보드 API 미지원 시 구형 방식 사용
+        legacyCopy(text);
       }
     };
     
-    // 구형 브라우저를 위한 복사 함수
     const legacyCopy = (text) => {
       const textArea = document.createElement('textarea');
       textArea.value = text;
@@ -704,37 +771,31 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.removeChild(textArea);
     };
 
-    // "링크 복사하기" 버튼 이벤트 리스너
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
         copyToClipboard(eventUrl);
       });
     }
 
-    // "링크 공유하기" 버튼 이벤트 리스너
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
-        // navigator.share API (모바일 등) 지원 시 공유 기능 우선 사용
         if (navigator.share) {
           navigator.share({
             title: '호치킨 세트메이커 이벤트',
             text: '내가 만드는 메뉴 꿀 조합! 총 천만원 상금 획득의 기회!',
             url: eventUrl,
           }).catch((error) => {
-            // 사용자가 공유를 취소한 경우는 에러로 보지 않음
             if (error.name !== 'AbortError') {
               console.error('Share failed:', error);
             }
           });
         } else {
-          // 공유 기능 미지원 시, 복사 기능으로 대체
           copyToClipboard(eventUrl);
         }
       });
     }
   }
 
-  // 페이지 초기화 함수 호출
   loadPrivacyPolicy();
   preloadImages(menuData);
   renderMenu('chicken');

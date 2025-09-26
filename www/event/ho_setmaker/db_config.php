@@ -6,16 +6,10 @@ date_default_timezone_set('Asia/Seoul');
 // 데이터베이스 연결 정보 (공유 파일)
 // ===================================
 
-// --- 데이터베이스 연결 정보 ---
 $servername = "localhost";
 $username = "root";       // 본인 DB 사용자 이름
 $password = "";           // 본인 DB 비밀번호
 $dbname = "hochicken";    // 본인 DB 이름
-
-// $servername = "localhost";
-// $username = "hochicken";       // 본인 DB 사용자 이름
-// $password = "sexy!020";           // 본인 DB 비밀번호
-// $dbname = "hochicken";    // 본인 DB 이름
 
 // --- 데이터베이스 연결 및 오류 확인 ---
 $conn = new mysqli($servername, $username, $password, $dbname);
