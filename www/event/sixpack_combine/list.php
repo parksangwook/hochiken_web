@@ -12,11 +12,14 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 require_once 'db_config.php';
 
 // 2. 페이지네이션 및 보기 옵션 변수 설정
-$limit_options = [30, 50, 100, 200];
+// ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+$limit_options = array(30, 50, 100, 200);
 $limit = isset($_GET['limit']) && in_array($_GET['limit'], $limit_options) ? (int)$_GET['limit'] : 50;
 
 $total_records_query = $conn->query("SELECT COUNT(id) FROM event_sixpack_entries");
-$total_records = $total_records_query->fetch_row()[0];
+// ✨ [수정] PHP 5.3 호환을 위해 함수 결과를 변수에 먼저 담도록 변경
+$total_row = $total_records_query->fetch_row();
+$total_records = $total_row[0];
 
 $total_pages = ($total_records > 0) ? ceil($total_records / $limit) : 1;
 
@@ -32,7 +35,16 @@ $sql = "SELECT * FROM event_sixpack_entries ORDER BY id DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
-$result = $stmt->get_result();
+
+// ✨ [수정] get_result()를 대체하는 로직
+$stmt->store_result();
+$meta = $stmt->result_metadata();
+$params = array();
+$row = array();
+while ($field = $meta->fetch_field()) {
+    $params[] = &$row[$field->name];
+}
+call_user_func_array(array($stmt, 'bind_result'), $params);
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -46,9 +58,23 @@ $result = $stmt->get_result();
             padding: 20px;
             font-size: 14px;
         }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: center;
+            word-break: break-all;
+        }
         th { background-color: #f2f2f2; }
+
+        th:nth-child(4), th:nth-child(5) {
+            width: 30%;
+        }
+
         .controls { 
             display: flex; 
             justify-content: flex-end;
@@ -81,7 +107,6 @@ $result = $stmt->get_result();
         }
         .limit-selector select { padding: 5px; border-radius: 4px; font-size: 13px; }
 
-        /* *** 버튼 스타일 추가 *** */
         .download-btn {
             padding: 5px 15px;
             background-color: #2e6b2c;
@@ -93,6 +118,24 @@ $result = $stmt->get_result();
         .download-btn:hover {
             background-color: #245423;
         }
+
+        tbody tr {
+            cursor: pointer; 
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5; 
+        }
+        .description-cell {
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .description-cell.expanded {
+            white-space: normal;
+            overflow: visible;
+        }
+
     </style>
 </head>
 <body>
@@ -133,31 +176,50 @@ $result = $stmt->get_result();
         <thead>
             <tr>
                 <th>성함</th><th>연락처</th><th>세트이름</th><th>설명</th>
-                <th>치킨메뉴</th><th>사이드1</th><th>사이드2</th>
+                <th>치킨메뉴</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    $chicken_menus = [];
-                    if (!empty($row['menu_1'])) $chicken_menus[] = $row['menu_1'];
-                    if (!empty($row['menu_2'])) $chicken_menus[] = $row['menu_2'];
-                    if (!empty($row['menu_3'])) $chicken_menus[] = $row['menu_3'];
-                    $chicken_menu_str = implode(',', $chicken_menus);
+            // ✨ [수정] $result 대신 $stmt 객체를 사용하도록 변경
+            if ($stmt->num_rows > 0) {
+                while($stmt->fetch()) {
+                    // ✨ --- 메뉴 수량 계산 로직 --- ✨
+                    // ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+                    $all_menus = array();
+                    for ($i = 1; $i <= 6; $i++) {
+                        if (!empty($row['menu_' . $i])) {
+                            $all_menus[] = $row['menu_' . $i];
+                        }
+                    }
+
+                    // ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+                    $final_menu_list = array();
+                    if (!empty($all_menus)) {
+                        $menu_counts = array_count_values($all_menus);
+                        
+                        foreach ($menu_counts as $menu_name => $count) {
+                            $times_to_add = floor($count / 2) + ($count % 2);
+                            
+                            for ($j = 0; $j < $times_to_add; $j++) {
+                                $final_menu_list[] = $menu_name;
+                            }
+                        }
+                    }
+                    
+                    $menu_str = implode(', ', $final_menu_list);
+                    // ✨ --- 로직 끝 --- ✨
 
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($row['name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['set_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['set_description']) . "</td>";
-                    echo "<td>" . htmlspecialchars($chicken_menu_str) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['menu_4']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['menu_5']) . "</td>";
+                    echo "<td class='description-cell' title='클릭하여 전체 내용 보기'>" . htmlspecialchars($row['set_description']) . "</td>";
+                    echo "<td>" . htmlspecialchars($menu_str) . "</td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='7'>표시할 데이터가 없습니다.</td></tr>";
+                echo "<tr><td colspan='5'>표시할 데이터가 없습니다.</td></tr>";
             }
             $stmt->close();
             $conn->close();
@@ -166,7 +228,6 @@ $result = $stmt->get_result();
     </table>
 
     <div class="controls">
-            
         <div class="pagination">
             <a href="?page=<?php echo $page - 1; ?>&limit=<?php echo $limit; ?>" class="<?php if ($page <= 1) echo 'disabled'; ?>">이전</a>
             
@@ -179,6 +240,26 @@ $result = $stmt->get_result();
             <a href="?page=<?php echo $page + 1; ?>&limit=<?php echo $limit; ?>" class="<?php if ($page >= $total_pages) echo 'disabled'; ?>">다음</a>
         </div>
     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    tableRows.forEach(row => {
+        row.addEventListener('click', function () {
+            const currentDescriptionCell = this.querySelector('.description-cell');
+            if (!currentDescriptionCell) return;
+            const isAlreadyExpanded = currentDescriptionCell.classList.contains('expanded');
+            document.querySelectorAll('.description-cell.expanded').forEach(cell => {
+                cell.classList.remove('expanded');
+            });
+            if (!isAlreadyExpanded) {
+                currentDescriptionCell.classList.add('expanded');
+            }
+        });
+    });
+});
+</script>
 
 </body>
 </html>

@@ -106,9 +106,6 @@
 
     <img src="./images/session5.png" alt="이벤트 경품" class="w-full align-top" />
 
-   
-   
-   
  <div id="submission-section" class="relative">
   <img src="./images/session6.png" alt="제출하기" class="w-full align-top" />
 
@@ -156,14 +153,21 @@
       </div>
       
       <div class="relative h-[25%] flex-shrink-0">
-        <button type="submit" class="absolute top-[1%] left-1/2 w-full -translate-x-1/2 transition-transform active:scale-95">
+        <button type="submit" class="absolute top-[3%] left-1/2 w-full -translate-x-1/2 transition-transform active:scale-95">
           <img src="./images/05_bt.png" alt="이벤트 참여하기" />
         </button>
-        <button id="share-btn" type="button" class="absolute top-[40%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
+        <button id="share-btn" type="button" class="absolute top-[45%] left-1/2 w-[61%] -translate-x-1/2 cursor-pointer transition-transform active:scale-95">
           <img src="./images/05_share_link.png" alt="링크 복사하기" />
         </button>
       </div>
-      
+
+      <input type="hidden" name="menu_1" value="">
+      <input type="hidden" name="menu_2" value="">
+      <input type="hidden" name="menu_3" value="">
+      <input type="hidden" name="menu_4" value="">
+      <input type="hidden" name="menu_5" value="">
+      <input type="hidden" name="menu_6" value="">
+      <input type="hidden" name="pepsi_included" value="no">
     </form>
   </div>
 </div>

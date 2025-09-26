@@ -2,7 +2,10 @@
 // 세션 시작: 로그인 상태를 기록하기 위해 최상단에 위치해야 합니다.
 session_start();
 
-$admin_password = "1234"; // 실제 관리자 비밀번호
+// 설정 파일 포함
+require_once 'config.php';
+
+$admin_password = $config['admin_password']; // config 파일에서 비밀번호 가져오기
 $error_message = "";
 
 // 폼이 제출되었는지 확인 (POST 방식)
