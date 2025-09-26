@@ -28,19 +28,19 @@ $output = fopen('php://output', 'w');
 // *** 중요: 엑셀에서 한글이 깨지지 않도록 UTF-8 BOM을 파일 맨 앞에 추가 ***
 fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-// ✨ [수정] CSV 파일의 헤더를 DB 스키마에 맞게 변경
-$headers = [
+// ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+$headers = array(
     'ID', '이름', '연락처', '세트이름', '세트설명', 
     '개인정보 동의일', '메뉴1', '메뉴2', '메뉴3', '메뉴4', '메뉴5', '메뉴6',
     '상태', '등록일'
-];
+);
 fputcsv($output, $headers);
 
 // DB에서 가져온 데이터를 한 줄씩 CSV 파일에 추가
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        // ✨ [수정] 헤더 순서와 정확히 일치하도록 데이터 배열을 직접 구성
-        $csv_row = [
+        // ✨ [수정] PHP 5.3 호환을 위해 array() 문법으로 변경
+        $csv_row = array(
             $row['id'],
             $row['name'],
             $row['phone'],
@@ -55,10 +55,13 @@ if ($result->num_rows > 0) {
             $row['menu_6'],
             $row['status'],
             $row['created_at']
-        ];
+        );
         fputcsv($output, $csv_row);
     }
 }
 
 $conn->close();
 exit;
+
+// ✨ [수정] 불필요한 닫는 괄호 삭제
+?>
